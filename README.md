@@ -1,6 +1,6 @@
 # amauriswill.github.io
 
-Portafolio personal de **Vincel Amauris Willmore Medrano**: sitio estático de una sola
+Portafolio personal de **Amauris Willmore Medrano**: sitio estático de una sola
 columna, tipografía nativa del sistema y modo oscuro automático por CSS.
 
 ## Mapa del repositorio
@@ -58,7 +58,9 @@ node tools/validate-site.mjs
 
 Comprueba: existencia de las 9 páginas, UTF-8 sin BOM, esqueleto del documento,
 capa de estilos externa, ausencia de JavaScript, anidamiento de etiquetas, enlaces
-internos resueltos, contrato de navegación, contrato de pie de página y tokens de diseño.
+internos resueltos, contrato de navegación, contrato de pie de página, contrato de
+identidad (el nombre público del sitio, `Amauris Willmore`, debe ser idéntico en la
+cabecera de las 9 páginas) y los tokens de diseño.
 El proceso devuelve código de salida `1` si alguna comprobación falla.
 
 Para previsualizar en local:

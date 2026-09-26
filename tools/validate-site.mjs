@@ -40,6 +40,9 @@ const FOOTER_LINKS = [
 
 const STYLESHEET = 'assets/css/main.css';
 
+/** Nombre público del sitio: debe ser idéntico en la cabecera de las 9 páginas. */
+const SITE_NAME = 'Amauris Willmore';
+
 /** Tokens que la capa de diseño debe exponer siempre. */
 const REQUIRED_TOKENS = [
     '--color-bg', '--color-text', '--color-muted', '--color-link', '--color-border',
@@ -361,6 +364,30 @@ function stripCssComments(css) {
     return css.replace(/\/\*[\s\S]*?\*\//g, '');
 }
 
+function checkSiteIdentity(pages) {
+    const failures = [];
+
+    for (const page of pages.values()) {
+        if (page.missing) continue;
+
+        const header = sliceElement(page.html, '<header', '</header>');
+        if (!header) continue; // checkNavigation ya reporta la ausencia de cabecera
+
+        const block = /<div class="site-title">\s*<a href="index\.html">([^<]*)<\/a>\s*<\/div>/.exec(header);
+        if (!block) {
+            failures.push(`${page.file}: .site-title debe ser un enlace a index.html`);
+            continue;
+        }
+
+        const name = block[1].trim();
+        if (name !== SITE_NAME) {
+            failures.push(`${page.file}: el nombre del sitio debe ser "${SITE_NAME}" y es "${name}"`);
+        }
+    }
+
+    return failures;
+}
+
 function checkDesignTokens() {
     const path = join(ROOT, STYLESHEET);
     if (!existsSync(path)) return [`${STYLESHEET}: no existe`];
@@ -409,7 +436,8 @@ const CHECKS = [
     ['6. Enlaces internos resueltos (sin placeholders)', checkInternalLinks],
     ['7. Contrato de navegación (orden y aria-current)', checkNavigation],
     ['8. Contrato de pie de página (5 enlaces y rel seguro)', checkFooterContract],
-    ['9. Tokens de diseño de la hoja única', checkDesignTokens]
+    ['9. Contrato de identidad (nombre del sitio en la cabecera)', checkSiteIdentity],
+    ['10. Tokens de diseño de la hoja única', checkDesignTokens]
 ];
 
 function main() {
