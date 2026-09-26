@@ -154,10 +154,10 @@ Lo que sí se ha adoptado de su sitio:
   izquierda y la fecha en monoespaciada a la derecha, cabecera con el `h1` a 1,875 rem
   (`text-3xl`), `semibold`, `tracking-tight` y `leading-tight`, subtítulo apagado, y después la
   prosa ocupando todo el ancho del contenedor.
-- **La prosa con sus valores de Tailwind `prose-lg`**: 1,125 rem, interlineado 1,8, tinta al 80%
-  (`color-mix`), títulos en `em` con `tracking-tight`, citas con barra de acento de 2 px, viñetas de
-  lista en acento, código en línea como chip con marco y radio pequeño, y bloques de código como
-  tarjeta oscura con marco claro **también en tema claro**.
+- **La prosa con sus proporciones de Tailwind `prose-lg`**: 1,0625 rem (17 px, un punto por debajo
+  de él), interlineado 1,8, tinta al 80% (`color-mix`), separación de párrafo de 1,35 rem (su
+  `1.25em`), títulos en `em`; cita con barra de acento de 2 px; viñetas de lista en acento; código
+  en línea como chip con marco; y bloque de código como tarjeta oscura **también en tema claro**.
 - **Contenedor de 42 rem** (su `max-w-2xl`) con relleno vertical de 4 rem.
 - **Barra de progreso de lectura**: línea de acento fija arriba que crece con el scroll.
 - **Listas con línea guía**: título monoespaciado, guion fino hasta el metadato y fecha a la
@@ -175,6 +175,20 @@ Lo que **no** se ha copiado, y por qué:
   hace falta un titular gigante para nuestro contenido.
 - Su barra de "copy prompt" y el resaltado de sintaxis con Shiki: son piezas de su contenido, no
   de la maqueta; el CSS del bloque de código ya está listo para cuando haya un `<pre>`.
+
+## Escala tipográfica
+
+| Elemento | Token | Tamaño | Caracteres por línea (contenedor de 672 px) |
+|---|---|---|---|
+| Cuerpo del sitio | `--text-body` | **15 px** | ~90 |
+| Prosa del artículo | `--text-prose` | **17 px** | ~79 |
+| Títulos de listas, navegación y etiquetas | `--text-sm` | **14 px** | ~96 (monoespaciada) |
+| Fechas, años y metadatos | `--text-2xs` | **12 px** | — |
+| Subtítulo de página | `--text-md` | 16,8 px | — |
+| `h1` del artículo | `--text-2xl` | 30 px | — |
+
+Es un punto más compacta que la de ivan.codes (16 px de cuerpo y 18 px de prosa). El titular del
+artículo se mantiene en 30 px, que es su valor exacto.
 
 ## Tipografías
 

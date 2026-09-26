@@ -61,7 +61,7 @@ const SITE_NAME = 'Amauris Willmore';
 const REQUIRED_TOKENS = [
     '--color-bg', '--color-text', '--color-muted', '--color-surface', '--color-accent',
     '--color-line', '--color-code-dark', '--font-sans', '--font-mono', '--space-lg',
-    '--text-base', '--text-prose', '--reading-measure'
+    '--text-body', '--text-base', '--text-prose', '--reading-measure'
 ];
 
 const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',

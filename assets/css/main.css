@@ -111,15 +111,16 @@
     --weight-regular: 400;
     --weight-medium: 500;
     --weight-semibold: 600;
+    --text-body: 0.9375rem; /* 15px: el cuerpo del sitio, un punto por debajo de ivan.codes */
     --text-2xs: 0.75rem;
     --text-xs: 0.85rem;
-    --text-sm: 0.9rem;
+    --text-sm: 0.875rem;   /* 14px: listas, etiquetas y navegación */
     --text-base: 0.95rem;
     --text-md: 1.05rem;
     --text-lg: 1.1rem;
     --text-xl: 1.4rem;
     --text-2xl: 1.875rem;  /* h1 del artículo: su text-3xl */
-    --text-prose: 1.125rem; /* cuerpo del artículo: su prose-lg */
+    --text-prose: 1.0625rem; /* 17px: la prosa del artículo, algo más compacta que la suya */
     --leading: 1.6;
     --leading-prose: 1.8; /* su prose-p:leading-[1.8] */
 
@@ -145,7 +146,7 @@
     --gutter: 1.5rem;
     --radius-sm: 4px;
     --radius-lg: 0.5rem;
-    --space-prose: 1.4rem; /* separación de párrafo: 1.25em sobre 18px */
+    --space-prose: 1.35rem; /* separación de párrafo: su 1.25em sobre 17px */
 
     /* --- Movimiento --- */
     --transition-color: color 0.2s ease-in-out;
@@ -198,7 +199,7 @@ body {
     padding: var(--space-7xl) var(--gutter); /* su py-16 */
 
     font-family: var(--font-sans);
-    font-size: 1rem;
+    font-size: var(--text-body);
     font-weight: var(--weight-regular);
     line-height: var(--leading);
     color: var(--color-text);
@@ -395,7 +396,7 @@ pre code {
 
 .site-nav a {
     color: var(--color-muted);
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     border-bottom: none;
     transition: var(--transition-color);
 }
@@ -738,7 +739,7 @@ pre code {
     gap: var(--space-2xl);
     margin-top: var(--space-7xl);
     padding-top: var(--space-4xl);
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
 }
 
 .site-footer a {
