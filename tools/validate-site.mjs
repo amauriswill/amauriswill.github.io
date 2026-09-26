@@ -2,7 +2,7 @@
 /**
  * validate-site.mjs — Pruebas de conformidad arquitectónica del portafolio.
  * -----------------------------------------------------------------------------
- * Es el "contrato ejecutable" del proyecto: comprueba que las 10 páginas
+ * Es el "contrato ejecutable" del proyecto: comprueba que las 12 páginas
  * respeten las decisiones de arquitectura y las reglas de estilo.
  * Sin dependencias externas (solo Node >= 18).
  *
@@ -19,17 +19,19 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PAGES = {
     'index.html': 'index.html',
     'proyectos.html': 'proyectos.html',
-    'notas.html': 'notas.html',
-    'nota-cpp.html': 'notas.html',
-    'nota-ia.html': 'notas.html',
-    'nota-automatizacion.html': 'notas.html',
-    'nota-omarchy.html': 'notas.html',
-    'nota-educacion.html': 'notas.html',
-    'nota-psicologia.html': 'notas.html',
-    'stack.html': 'stack.html'
+    'blog.html': 'blog.html',
+    'uses.html': 'uses.html',
+    'photos.html': 'photos.html',
+    'contact.html': 'contact.html',
+    'nota-cpp.html': 'blog.html',
+    'nota-ia.html': 'blog.html',
+    'nota-automatizacion.html': 'blog.html',
+    'nota-omarchy.html': 'blog.html',
+    'nota-educacion.html': 'blog.html',
+    'nota-psicologia.html': 'blog.html'
 };
 
-const NAV_ORDER = ['index.html', 'proyectos.html', 'notas.html', 'stack.html'];
+const NAV_ORDER = ['index.html', 'proyectos.html', 'blog.html', 'uses.html', 'photos.html', 'contact.html'];
 
 const FOOTER_LINKS = [
     'mailto:amauriswillwork@gmail.com',
@@ -41,7 +43,7 @@ const FOOTER_LINKS = [
 
 const STYLESHEET = 'assets/css/main.css';
 
-/** Nombre público del sitio: debe ser idéntico en la cabecera de las 9 páginas. */
+/** Nombre público del sitio: debe ser idéntico en la cabecera de todas las páginas. */
 const SITE_NAME = 'Amauris Willmore';
 
 /** Tokens que la capa de diseño debe exponer siempre. */
@@ -432,7 +434,7 @@ function checkDesignTokens() {
  * ========================================================================== */
 
 const CHECKS = [
-    ['1. Existencia de las 10 páginas en la raíz', checkPagesExist],
+    ['1. Existencia de las 12 páginas en la raíz', checkPagesExist],
     ['2. Esqueleto del documento (doctype, lang, meta y título)', checkDocumentShell],
     ['3. Capa de estilos externa única (sin CSS embebido ni en línea)', checkStyleLayer],
     ['4. Cero JavaScript', checkNoScripts],

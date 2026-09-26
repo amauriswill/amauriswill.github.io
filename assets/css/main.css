@@ -101,6 +101,11 @@ ul[class] {
     list-style: none;
 }
 
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 /* =============================================================================
  * 3. ELEMENTOS BASE
  * ========================================================================== */
@@ -335,7 +340,7 @@ pre {
     color: var(--color-muted);
 }
 
-/* --- 4.4 Proyectos --- */
+/* --- 4.5 Proyectos --- */
 
 .project {
     margin-bottom: var(--space-4xl);
@@ -376,7 +381,7 @@ pre {
     color: var(--color-muted);
 }
 
-/* --- 4.5 Artículos --- */
+/* --- 4.6 Artículos --- */
 
 .article__meta {
     margin: 0 0 var(--space-4xl);
@@ -391,7 +396,47 @@ pre {
     border-bottom: none;
 }
 
-/* --- 4.6 Pie de página --- */
+/* --- 4.7 Galería (fotos) --- */
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: var(--space-2xl);
+}
+
+.photo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin: 0;
+}
+
+/* Hueco de la serie: si se sustituye por una <img>, conserva proporción y borde. */
+.photo__frame {
+    display: block;
+    aspect-ratio: 4 / 3;
+    background-color: var(--color-code-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.photo__caption {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+}
+
+.photo__title {
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+}
+
+.photo__meta {
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+}
+
+/* --- 4.8 Pie de página --- */
 
 .site-footer {
     display: flex;
@@ -411,6 +456,13 @@ pre {
 
 .site-footer a:hover {
     color: var(--color-text);
+}
+
+.site-footer__note {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-muted);
 }
 
 /* =============================================================================
