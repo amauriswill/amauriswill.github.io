@@ -11,7 +11,6 @@ Inter + IBM Plex Mono auto-alojadas y tema claro/oscuro con interruptor.
 ├── proyectos.html        Trayectoria completa (5 proyectos)
 ├── blog.html             Índice del blog (6 artículos)
 ├── uses.html             Stack y herramientas (hardware, software y flujo)
-├── photos.html           Cuadrícula de series fotográficas
 ├── contact.html          Canales de contacto
 ├── nota-cpp.html         Artículo: subprocesos y Direct2D en C++
 ├── nota-ia.html          Artículo: modelo Jev JSON / TypeSafe AI
@@ -39,7 +38,7 @@ Inter + IBM Plex Mono auto-alojadas y tema claro/oscuro con interruptor.
 | Tokens de diseño | `main.css` §1 | Única fuente de verdad de color, tipografía, espaciado y medidas de lectura |
 | Reset mínimo | `main.css` §2 | Normalización local, sin frameworks ni dependencias |
 | Elementos base | `main.css` §3 | Tipografía, enlaces, ritmo de prosa y columnas de lectura |
-| Layout y componentes | `main.css` §4 | `.site-header`, `.theme-switch`, `.page-title`, `.section-title`, `.subtitle`, `.entry`, `.project`, `.article`, `.tags` / `.tag`, `.gallery` / `.photo`, `.section-more`, `.credentials`, `.site-footer` |
+| Layout y componentes | `main.css` §4 | `.site-header`, `.theme-switch`, `.page-title`, `.section-title`, `.subtitle`, `.entry`, `.project`, `.article`, `.tags` / `.tag`, `.section-more`, `.credentials`, `.site-footer` |
 | Utilidades | `main.css` §5 | `.visually-hidden` (contenido solo para lectores de pantalla y buscadores) |
 | Responsive | `main.css` §6 | Un único breakpoint en 550px |
 | Comportamiento | `assets/js/*.js` | Interruptor de tema y barra de progreso; sin ellos, el sitio se queda en claro |
@@ -63,7 +62,7 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
    accesibilidad), no con una clase adjetiva.
 7. Cabecera y pie son **contratos idénticos** en todas las páginas y están verificados por el test.
    La navegación principal tiene cuatro secciones (inicio, proyectos, blog, contact); `uses` y
-   `photos` son secundarias y viven en el pie, para no dispersar a quien viene a evaluar trabajo.
+   `uses` es secundaria y vive en el pie, para no dispersar a quien viene a evaluar trabajo.
    El pie es un unico grupo de enlaces centrado, sin llamada a la accion.
 8. Enlaces externos siempre con `target="_blank"` + `rel="noopener noreferrer"`.
 9. UTF-8 sin BOM en todos los archivos.
@@ -239,23 +238,6 @@ tipografía editorial.
 3. Enlazar la entrada desde `index.html` solo si es una nota destacada.
 4. Registrar la nueva página en el mapa `PAGES` de `tools/validate-site.mjs`.
 5. Ejecutar `node tools/validate-site.mjs` hasta obtener `PASS`.
-
-## Cómo publicar fotos
-
-La página `photos.html` usa el componente `.gallery` / `.photo`. Cada serie es una
-`<figure>` con un hueco (`<div class="photo__frame">`) y su pie. Para activar una serie:
-
-1. Copiar los archivos en `assets/img/` siguiendo la convención de nombres y tamaños
-   descrita en `assets/img/README.md`.
-2. Sustituir el hueco por su imagen:
-
-   ```html
-   <img class="photo__frame" src="assets/img/serie-calle-01.jpg"
-        alt="Descripción de la foto" loading="lazy">
-   ```
-
-3. Actualizar el pie (`photo__meta`) con el año y el número de fotos.
-4. Ejecutar `node tools/validate-site.mjs` hasta obtener `PASS`.
 
 ## Publicación
 

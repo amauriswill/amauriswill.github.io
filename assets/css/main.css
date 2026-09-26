@@ -1,34 +1,4 @@
-/* =============================================================================
- * main.css — Hoja de estilos única del portafolio de Amauris Willmore
- * -----------------------------------------------------------------------------
- * Arquitectura por capas, de lo abstracto a lo concreto:
- *   0. Tipografías           -> @font-face locales, sin peticiones a terceros
- *   1. Tokens de diseño       -> única fuente de verdad (color, tipografía, escala)
- *   2. Reset mínimo           -> normalización local, sin dependencias externas
- *   3. Elementos base         -> tipografía, enlaces y prosa por defecto
- *   4. Layout y componentes   -> cabecera, entradas, proyectos, artículos y pie
- *   5. Utilidades             -> clases de un solo propósito (.visually-hidden)
- *   6. Responsive             -> un único breakpoint (550px)
- *
- * Reglas del proyecto:
- *   - Sin estilos en línea, sin <style> embebido y sin JavaScript en línea.
- *   - Sin !important y sin selectores de ID.
- *   - Cada tema se declara UNA sola vez con light-dark(); el tema activo lo decide
- *     color-scheme, que el interruptor fija con :root[data-theme="..."].
- *   - No hay bordes decorativos: el texto se separa con espacio. Los enlaces no
- *     llevan línea en reposo; aparece sola, de derecha a izquierda, al pasar el ratón.
- *   - Convención de nombres BEM-lite: .bloque, .bloque__elemento, .bloque--variante.
- *   - Todo valor visual nuevo debe expresarse con un token de la capa 1.
- * ========================================================================== */
 
-/* =============================================================================
- * 0. TIPOGRAFÍAS
- * -----------------------------------------------------------------------------
- * Inter (variable) para el texto e IBM Plex Mono para el código y los datos, las
- * dos familias que usa ivan.codes, auto-alojadas en assets/fonts con el
- * subconjunto latino: cero peticiones a terceros y cero dependencia de red
- * externa. font-display: swap evita el pantallazo en blanco mientras llegan.
- * ========================================================================== */
 
 @font-face {
     font-family: "Inter";
@@ -66,64 +36,43 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* =============================================================================
- * 1. TOKENS DE DISEÑO
- * ========================================================================== */
 
 :root {
-    /* El sitio nace claro. El interruptor añade data-theme="dark" para el oscuro. */
     color-scheme: light;
 
-    /* --- Color ---
-       Paleta de ivan.codes: fondo crudo, tinta casi negra, grises cálidos, una
-       superficie y un coral de acento. Cada token declara los dos temas con
-       light-dark(), así que el oscuro no duplica bloque. La primera línea de cada
-       par es el respaldo para navegadores que ignoran light-dark().
-       Mínimos que tools/validate-site.mjs exige sobre el fondo:
-       texto >= 7:1 · atenuado y tinta de acento >= 4.5:1 · subrayado >= 3:1 */
     --color-bg: #fafafa;
     --color-bg: light-dark(#fafafa, #0a0a0a);
     --color-text: #171717;
-    --color-text: light-dark(#171717, #e6e6e3);      /* 17.2:1 claro · 15.8:1 oscuro */
+--color-text: light-dark(#171717, #e6e6e3);
     --color-muted: #6b6b66;
-    --color-muted: light-dark(#6b6b66, #8a8a85);     /* 5.1:1 · 5.7:1 */
+--color-muted: light-dark(#6b6b66, #8a8a85);
     --color-surface: #f0f0f0;
-    --color-surface: light-dark(#f0f0f0, #171717);   /* código, selección y huecos de foto */
-    /* El acento parte de #f7df1e. Ese tono exacto solo funciona sobre fondo oscuro
-       (14.6:1); en claro se usa el mismo tono al 50% (#7c700f, mismo hue de 53,4°)
-       para que también pueda usarse como color de texto (4.8:1). */
+--color-surface: light-dark(#f0f0f0, #171717);
     --color-accent: #7c700f;
-    --color-accent: light-dark(#7c700f, #f7df1e);    /* 4.8:1 claro · 14.6:1 oscuro */
-    /* Línea guía de las listas y marcos de código e imágenes. */
+--color-accent: light-dark(#7c700f, #f7df1e);
     --color-line: #e0e0dc;
     --color-line: light-dark(#e0e0dc, #2a2a2a);
-    /* Los bloques de código son oscuros en los dos temas, como los suyos. */
     --color-code-dark: #151515;
-    --code-text: #e5e4e7; /* texto del bloque de código sobre la tarjeta oscura */
-    /* Tinta al 80% para la prosa: su prose-p:text-foreground/80. */
+--code-text: #e5e4e7;
     --text-ink-soft: color-mix(in srgb, var(--color-text) 80%, var(--color-bg));
 
-    /* --- Tipografía ---
-       Inter (variable) para el texto y IBM Plex Mono para el código y los datos,
-       exactamente las dos familias que usa ivan.codes. */
     --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
     --weight-regular: 400;
     --weight-medium: 500;
     --weight-semibold: 600;
-    --text-body: 0.9375rem; /* 15px: el cuerpo del sitio, un punto por debajo de ivan.codes */
+--text-body: 0.9375rem;
     --text-2xs: 0.75rem;
     --text-xs: 0.85rem;
-    --text-sm: 0.875rem;   /* 14px: listas, etiquetas y navegación */
+--text-sm: 0.875rem;
     --text-base: 0.95rem;
     --text-md: 1.05rem;
     --text-lg: 1.1rem;
-    --text-2xl: 1.875rem;  /* h1 del artículo: su text-3xl */
-    --text-prose: 1.0625rem; /* 17px: la prosa del artículo, algo más compacta que la suya */
+--text-2xl: 1.875rem;
+--text-prose: 1.0625rem;
     --leading: 1.6;
-    --leading-prose: 1.8; /* su prose-p:leading-[1.8] */
+--leading-prose: 1.8;
 
-    /* --- Escala de espaciado (única para márgenes, rellenos y gaps) --- */
     --space-3xs: 0.2rem;
     --space-2xs: 0.3rem;
     --space-xs: 0.4rem;
@@ -137,18 +86,11 @@
     --space-5xl: 3rem;
     --space-7xl: 4rem;
 
-    /* --- Layout ---
-       Los dos anchos de su sitio: 36rem (su max-w-xl) para los listados y
-       42rem (su max-w-2xl) para los artículos, que necesitan más ancho. */
     --reading-measure: 576px;
     --reading-measure-wide: 672px;
-    --page-pad-y: 6rem; /* su py-24: 96px de aire arriba y abajo */
+--page-pad-y: 6rem;
     --gutter: 1.5rem;
 
-    /* --- Escala de una sola pantalla (capa 8) ---
-       Todo se mide en vh con clamp(): en un viewport bajo el sitio se comprime
-       proporcionalmente en vez de desbordarse. El minimo de cada uno es el valor
-       legible con espacio reducido, para que comprimir nunca saque texto. */
     --screen-pad-y: clamp(0.75rem, 3.4vh, 2.4rem);
     --screen-header-gap: clamp(1.1rem, 5.5vh, 3.5rem);
     --screen-lead-gap: clamp(0.8rem, 2.9vh, 2rem);
@@ -161,22 +103,16 @@
     --screen-row-pad: clamp(0.12rem, 0.56vh, 0.46rem);
     --radius-sm: 4px;
     --radius-lg: 0.5rem;
-    --space-prose: 1.35rem; /* separación de párrafo: su 1.25em sobre 17px */
+--space-prose: 1.35rem;
 
-    /* --- Movimiento --- */
     --transition-color: color 0.2s ease-in-out;
     --transition-knob: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
-/* El sitio es claro por defecto. El interruptor añade data-theme="dark" para
-   pasar al oscuro; no hace falta un atributo para volver a claro. */
 :root[data-theme="dark"] {
     color-scheme: dark;
 }
 
-/* =============================================================================
- * 2. RESET MÍNIMO
- * ========================================================================== */
 
 *,
 *::before,
@@ -188,8 +124,6 @@ html {
     -webkit-text-size-adjust: 100%;
 }
 
-/* Las listas de contenido (entry-list, project-list) se presentan como bloques
-   sin viñetas; el resto de listas conserva el comportamiento nativo. */
 ul[class] {
     margin: 0;
     padding: 0;
@@ -201,17 +135,11 @@ img {
     height: auto;
 }
 
-/* =============================================================================
- * 3. ELEMENTOS BASE
- * ========================================================================== */
 
-/* Layout: contenedor único, de una sola columna y centrado.
-   La medida de lectura se mantiene en 680px de contenido, por eso el ancho
-   máximo suma el relleno lateral (box-sizing: border-box). */
 body {
     max-width: calc(var(--reading-measure) + (2 * var(--gutter)));
     margin: 0 auto;
-    padding: var(--page-pad-y) var(--gutter); /* su px-6 / py-24 */
+padding: var(--page-pad-y) var(--gutter);
 
     font-family: var(--font-sans);
     font-size: var(--text-body);
@@ -219,7 +147,6 @@ body {
     line-height: var(--leading);
     color: var(--color-text);
     background-color: var(--color-bg);
-    /* El cambio de tema se ve suave, como en ivan.codes. */
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
     -webkit-font-smoothing: antialiased;
 }
@@ -229,14 +156,10 @@ body {
     background-color: var(--color-surface);
 }
 
-/* Los artículos miden como su max-w-2xl: la prosa y las imágenes necesitan más
-   ancho que un listado. */
 .page-wide {
     max-width: calc(var(--reading-measure-wide) + (2 * var(--gutter)));
 }
 
-/* El enlace no tiene línea en reposo: la dibuja una barra del acento que entra
-   de derecha a izquierda. Con 150ms es un barrido, no una transición llamativa. */
 a {
     color: var(--color-accent);
     text-decoration: none;
@@ -251,7 +174,6 @@ a:hover {
     background-size: 100% 1px;
 }
 
-/* Menú, pie, marca y "volver" son elementos de interfaz: sin línea animada. */
 .site-title a,
 .site-nav a,
 .site-footer a,
@@ -259,14 +181,12 @@ a:hover {
     background-image: none;
 }
 
-/* Con movimiento reducido la línea aparece de golpe, pero igual se ve. */
 @media (prefers-reduced-motion: reduce) {
     a {
         transition: none;
     }
 }
 
-/* El foco también debe verse en el botón, no solo en los enlaces. */
 a:focus-visible,
 button:focus-visible {
     outline: 2px solid var(--color-accent);
@@ -278,26 +198,23 @@ h2,
 h3 {
     font-weight: var(--weight-semibold);
     margin: 0 0 var(--space-lg);
-    text-wrap: balance; /* evita títulos con una palabra huérfana al final */
+text-wrap: balance;
 }
 
-/* Sus títulos van en la sans (h1 semibold con tracking-tight) y sus listas
-   en monoespaciada: solo los datos, el código y las listas usan IBM Plex Mono. */
 .article__title {
     margin: 0 0 var(--space-md);
     font-size: var(--text-2xl);
     font-weight: var(--weight-semibold);
-    line-height: 1.25;        /* leading-tight */
-    letter-spacing: -0.025em; /* tracking-tight */
+line-height: 1.25;
+letter-spacing: -0.025em;
 }
 
 .article__standfirst {
     margin: 0;
-    line-height: 1.625; /* leading-relaxed */
+line-height: 1.625;
     color: var(--color-muted);
 }
 
-/* Bloque de prosa: los valores de su Tailwind prose-lg, con la tinta al 80%. */
 .prose {
     font-size: var(--text-prose);
     line-height: var(--leading-prose);
@@ -329,7 +246,6 @@ h3 {
     color: var(--text-ink-soft);
 }
 
-/* Su viñeta de lista va en el color de acento. */
 .prose li::marker {
     color: var(--color-accent);
 }
@@ -348,7 +264,6 @@ h3 {
     border-radius: var(--radius-lg);
 }
 
-/* Código en línea: su chip con fondo tenue, marco y radio pequeño. */
 code {
     padding: 0.1em 0.35em;
     font-family: var(--font-mono);
@@ -360,7 +275,6 @@ code {
     border-radius: var(--radius-sm);
 }
 
-/* Bloque de código: tarjeta oscura con marco claro, también en tema claro. */
 pre {
     margin: 0 0 var(--space-prose);
     padding: var(--space-lg);
@@ -384,11 +298,7 @@ pre code {
     border-radius: 0;
 }
 
-/* =============================================================================
- * 4. LAYOUT Y COMPONENTES
- * ========================================================================== */
 
-/* --- 4.1 Cabecera del sitio (contrato idéntico en las 9 páginas) --- */
 
 .site-header {
     display: flex;
@@ -429,7 +339,6 @@ pre code {
 
 
 
-/* Menú e interruptor comparten la misma banda a la derecha. */
 .site-header__actions {
     display: flex;
     align-items: center;
@@ -438,9 +347,8 @@ pre code {
 }
 
 .theme-switch {
-    display: none; /* sin JavaScript no hay nada que cambiar: no se muestra */
+display: none;
     align-items: center;
-    /* Sin etiqueta: el relleno amplía el área sensible a ~28px (WCAG 2.2 pide 24). */
     padding: var(--space-2xs);
     color: var(--color-muted);
     background: none;
@@ -449,8 +357,6 @@ pre code {
     transition: var(--transition-color);
 }
 
-/* Con JavaScript disponible el interruptor aparece, y lo hace antes del primer
-   pintado porque el script es bloqueante en <head>. */
 .js .theme-switch {
     display: inline-flex;
 }
@@ -459,9 +365,6 @@ pre code {
     color: var(--color-text);
 }
 
-/* Icono local (assets/icons/lightbulb.svg) pintado con máscara: así hereda
-   currentColor y acompaña al tema, cosa que un <img src="…svg"> no puede hacer
-   porque su contenido no ve los colores de la página. */
 .theme-switch__icon {
     width: 1.125rem;
     height: 1.125rem;
@@ -476,17 +379,7 @@ pre code {
     transform: rotate(-18deg);
 }
 
-/* --- 4.2 Encabezados de página y texto de apoyo --- */
 
-/* Criterio de portada aplicado a las secciones: el titulo de pagina usa la
-   misma escala que la frase de entrada y abre con el mismo aire de columna.
-   Antes estaba en --text-xl (22px) con un margen superior de 3xl, bastante
-   mayor que el hueco que deja la portada, asi que cada pagina empezaba mas
-   abajo que la portada. */
-/* Criterio de portada en las secciones cortas: la portada recorta el aire
-   vertical de la caja de lectura (--page-pad-y) para que todo entre en una
-   pantalla. Las secciones largas necesitan ese aire, pero las cortas
-   (contact, uses) se quedaban a unos pocos pixeles de desbordar. */
 body:not(.is-single-screen) {
     padding-top: var(--space-3xl);
     padding-bottom: var(--space-3xl);
@@ -499,8 +392,6 @@ body:not(.is-single-screen) {
     line-height: 1.3;
 }
 
-/* Etiqueta de sección: su patrón real es texto pequeño y apagado, sin
-   mayúsculas ni marca de color. El acento lo llevan los enlaces y las viñetas. */
 .section-title {
     margin: var(--space-4xl) 0 var(--space-md);
     font-size: var(--text-sm);
@@ -518,7 +409,6 @@ body:not(.is-single-screen) {
     line-height: var(--leading);
 }
 
-/* --- 4.3 Entradas (portada y página de notas) --- */
 
 .entry {
     display: flex;
@@ -531,10 +421,6 @@ body:not(.is-single-screen) {
     max-width: 100%;
 }
 
-/* Título monoespaciado con línea guía hasta el metadato, como sus listas. El
-   título tiene que crecer para que el ::after tenga espacio donde dibujar: sin
-   flex: 1 1 auto el pseudo-elemento se queda a cero de ancho y la guía
-   desaparece. Es el mismo motivo que en .project__title. */
 .entry__title {
     display: flex;
     align-items: baseline;
@@ -555,8 +441,6 @@ body:not(.is-single-screen) {
     background-color: var(--color-line);
 }
 
-/* El acento se queda para el hover y para el foco: en reposo el titulo usa el
-   color de texto, como las filas de la portada. */
 .entry__title:hover,
 .entry__title:focus-visible {
     color: var(--color-accent);
@@ -576,7 +460,6 @@ body:not(.is-single-screen) {
     color: var(--color-muted);
 }
 
-/* Variante de la página de notas: entradas con descripción y más aire. */
 .entry--detail {
     padding: var(--space-xl) 0;
 }
@@ -595,7 +478,6 @@ body:not(.is-single-screen) {
     margin-top: var(--space-3xs);
 }
 
-/* Variante de la página "uses": entrada apilada a ancho completo y con etiquetas. */
 .entry--block {
     flex-direction: column;
     gap: var(--space-3xs);
@@ -616,7 +498,6 @@ body:not(.is-single-screen) {
     margin-top: 0;
 }
 
-/* --- 4.4 Etiquetas --- */
 
 .tags {
     display: flex;
@@ -625,18 +506,12 @@ body:not(.is-single-screen) {
     margin-top: var(--space-md);
 }
 
-/* Metadato en línea: sin fondo, borde, relleno ni radio (nada de "píldoras"). */
 .tag {
     font-size: var(--text-2xs);
     color: var(--color-muted);
 }
 
-/* --- 4.5 Proyectos --- */
 
-/* Cada tarjeta respira como una fila de la portada: la linea guia vive en el
-   titulo y el bloque conserva la escala de la prosa, no la de las tarjetas
-   antiguas (--text-lg en el titulo y separaciones de 4xl entre proyecto y
-   proyecto, que hacian que cada entrada quedara aislada del resto). */
 .project {
     margin-bottom: var(--space-3xl);
 }
@@ -649,17 +524,11 @@ body:not(.is-single-screen) {
     margin-bottom: var(--space-2xs);
 }
 
-/* Títulos y roles de proyecto en monoespaciada, como sus productos; la
-   descripción y las etiquetas se quedan en la sans. */
 .project__title,
 .project__role {
     font-family: var(--font-mono);
 }
 
-/* La cabecera de proyecto lleva la misma línea guía que las entradas. El título
-   tiene que crecer para que el ::after tenga espacio donde dibujar: sin
-   flex: 1 1 auto el pseudo-elemento se queda a cero de ancho y la guía
-   desaparece, que es justo lo que pasaba antes de este ajuste. */
 .project__title {
     display: flex;
     align-items: baseline;
@@ -678,7 +547,6 @@ body:not(.is-single-screen) {
     background-color: var(--color-line);
 }
 
-/* Metadatos (fechas y años) en IBM Plex Mono, como sus datos. */
 .project__meta,
 .entry__meta {
     font-family: var(--font-mono);
@@ -701,17 +569,13 @@ body:not(.is-single-screen) {
     color: var(--color-muted);
 }
 
-/* --- 4.6 Artículos ---
-   Su página de artículo es: fila de contexto con la fecha a la derecha,
-   cabecera con el título grande y su subtítulo, y la prosa ocupando todo el
-   ancho del contenedor (sin columna propia). */
 
 .article__context {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-lg);
-    margin-bottom: var(--space-4xl); /* su mb-12 */
+margin-bottom: var(--space-4xl);
     font-size: var(--text-sm);
     color: var(--color-muted);
 }
@@ -726,7 +590,6 @@ body:not(.is-single-screen) {
     color: var(--color-text);
 }
 
-/* La fecha va en monoespaciada, como su <time class="font-mono text-xs">. */
 .site-time {
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
@@ -734,7 +597,7 @@ body:not(.is-single-screen) {
 }
 
 .article__header {
-    margin-bottom: var(--space-7xl); /* su mb-12 */
+margin-bottom: var(--space-7xl);
 }
 
 .article__back {
@@ -743,48 +606,6 @@ body:not(.is-single-screen) {
     font-weight: var(--weight-medium);
     border-bottom: none;
 }
-
-/* --- 4.7 Galería (fotos) --- */
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: var(--space-2xl);
-}
-
-.photo {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    margin: 0;
-}
-
-/* Hueco de la serie: sin línea decorativa, solo superficie. Si se sustituye por
-   una <img>, conserva la proporción 4:3 y el resto del estilo ya no hace falta. */
-.photo__frame {
-    display: block;
-    aspect-ratio: 4 / 3;
-    background-color: var(--color-surface);
-    border-radius: var(--radius-sm);
-}
-
-.photo__caption {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3xs);
-}
-
-.photo__title {
-    font-size: var(--text-base);
-    font-weight: var(--weight-medium);
-}
-
-.photo__meta {
-    font-size: var(--text-xs);
-    color: var(--color-muted);
-}
-
-/* --- 4.8 Pie de página --- */
 
 
 .site-footer a {
@@ -804,16 +625,13 @@ body:not(.is-single-screen) {
     color: var(--color-muted);
 }
 
-/* --- 4.9 Enlace "ver más" al final de una sección --- */
 
 .section-more {
     margin: var(--space-3xl) 0 0;
     font-size: var(--text-base);
 }
 
-/* --- 4.10 Credenciales (listado dentro de una entrada) --- */
 
-/* Reactiva las viñetas que el reset elimina en las listas con clase. */
 .credentials {
     margin: 0;
     padding-left: var(--space-xl);
@@ -826,7 +644,6 @@ body:not(.is-single-screen) {
     margin-bottom: var(--space-3xs);
 }
 
-/* --- 4.10 Barra de progreso de lectura (como la suya) --- */
 
 .reading-progress {
     position: fixed;
@@ -840,11 +657,7 @@ body:not(.is-single-screen) {
     transform-origin: 0%;
 }
 
-/* =============================================================================
- * 5. UTILIDADES
- * ========================================================================== */
 
-/* Contenido solo para lectores de pantalla y buscadores. */
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -857,28 +670,13 @@ body:not(.is-single-screen) {
     clip-path: inset(50%);
 }
 
-/* =============================================================================
- * 6. RESPONSIVE (un único breakpoint: 550px)
- * ========================================================================== */
 
-/* =============================================================================
- * 7. PORTADA: EL ESQUELETO DE ivan.codes
- * -----------------------------------------------------------------------------
- * Su portada es deliberadamente escueta y se apoya en una sola pieza gramatical
- * que repite en cada listado: el TITULO followed by a thin leader line that eats
- * the leftover space, and the metadata parked at the right margin. Todo lo demas
- * es prosa. Estas reglas reproducen esa estructura sin tocar las paginas
- * interiores, que siguen usando .entry y .project.
- * ========================================================================== */
 
-/* --- 7.1 Encabezado de la portada: una frase en tinta, el resto atenuado --- */
 
 .hero {
     margin-bottom: var(--space-3xl);
 }
 
-/* La frase de entrada es lo unico del sitio que va en tinta plena y sube de
-   tamano: es el titulo real de la pagina. */
 .hero__lead {
     max-width: none;
     margin: 0 0 var(--space-lg);
@@ -891,8 +689,6 @@ body:not(.is-single-screen) {
     max-width: 34em;
 }
 
-/* En su portada los enlaces de prosa llevan subrayado permanente en color de
-   texto: el acento se reserva para el nav activo y el foco. */
 .hero .prose a,
 .page-intro .prose a {
     color: var(--color-text);
@@ -909,7 +705,6 @@ body:not(.is-single-screen) {
     text-decoration-color: var(--color-accent);
 }
 
-/* --- 7.2 La fila con linea guia: la unidad de lectura de sus listados --- */
 
 .row-list {
     margin: 0;
@@ -917,9 +712,6 @@ body:not(.is-single-screen) {
     list-style: none;
 }
 
-/* Cada fila es una linea de base: titulo, Guia elástica, metadato. La guia se
-   dibuja con un pseudo-elemento del titulo, no con un borde del contenedor,
-   para que solo exista donde de verdad hay espacio sobrante. */
 .row {
     display: flex;
     align-items: baseline;
@@ -927,9 +719,6 @@ body:not(.is-single-screen) {
     padding: var(--space-sm) 0;
 }
 
-/* El titulo crece para que su guia tenga espacio que repartir: si el <a> se
-   ajusta a su texto, el flex:1 de la guia no tiene nada que absorber y la
-   linea desaparece. Ese es el mecanismo completo de la fila. */
 .row__title {
     flex: 1 1 auto;
     display: flex;
@@ -940,8 +729,6 @@ body:not(.is-single-screen) {
     font-size: var(--text-sm);
     font-weight: var(--weight-regular);
     color: var(--color-text);
-    /* El titulo de la fila no dibuja la barra de acento: su guia ya es la
-       linea, y dos rayas a la vez serian ruido. */
     background-image: none;
 }
 
@@ -957,8 +744,6 @@ body:not(.is-single-screen) {
     color: var(--color-accent);
 }
 
-/* El metadato es un conjunto de valores en columna, no una frase: "2024" y la
-   herramienta se leen como dos celdas separadas por un hueco constante. */
 .row__meta {
     flex: 0 0 auto;
     display: flex;
@@ -970,7 +755,6 @@ body:not(.is-single-screen) {
     text-align: right;
 }
 
-/* --- 7.3 Pie centrado: un solo grupo de enlaces --- */
 
 .site-footer {
     display: flex;
@@ -1002,7 +786,7 @@ body:not(.is-single-screen) {
 
 @media (max-width: 550px) {
     body {
-        padding: var(--space-7xl) var(--gutter); /* su py-16 en móvil */
+padding: var(--space-7xl) var(--gutter);
     }
 
     .entry {
@@ -1015,7 +799,6 @@ body:not(.is-single-screen) {
         text-align: left;
     }
 
-    /* En columna la línea guía no aporta nada:hidden sm:block en el suyo. */
     .entry__title::after,
     .project__title::after {
         display: none;
@@ -1026,8 +809,6 @@ body:not(.is-single-screen) {
         gap: var(--space-3xs);
     }
 
-    /* La fila de la portada se apila y su guia se retira: sin ancho sobrante
-       que repartir solo dibujaria una raya corta pegada al titulo. */
     .row {
         flex-wrap: wrap;
         gap: var(--space-2xs);
@@ -1042,32 +823,12 @@ body:not(.is-single-screen) {
         text-align: left;
     }
 
-    /* El pie pasa a una columna: los enlaces y la llamada ya no caben en fila. */
     .site-footer {
         flex-direction: column;
         gap: var(--space-md);
     }
 }
 
-/* =============================================================================
- * 8. UNA SOLA PANTALLA (solo index.html)
- * -----------------------------------------------------------------------------
- * La portada cabe en el viewport: no hay scroll, y la pagina se lee entera de un
- * vistazo. Se consigue con tres decisiones, no con ocultar el desbordamiento:
- *
- *   1. body es una columna flex de altura completa, con cabecera y pie fijos y
- *      el contenido repartido en el espacio que sobra.
- *   2. Los dos listados van en paralelo (auto-fit), no apilados: de otro modo la
- *      altura sigue al numero de filas y deja de caber en pantallas cortas.
- *   3. La escala tipografica y los huecos se miden en vh con clamp(), de modo que
- *      en una pantalla baja el sitio se comprime en lugar de desbordarse.
- *
- * No se usa overflow:hidden a proposito. Recortar el contenido dejaria fuera
- * filas y enlaces al ampliar el zoom o en pantallas muy bajas, que es justo lo
- * que un reclutador con lupa no deberia encontrar. Si el viewport es mas bajo
- * que lo que el texto necesita, la pagina simplemente se hace mas alta: se
- * prefiere scroll a contenido invisible.
- * ========================================================================== */
 
 body.is-single-screen {
     min-height: 100vh;
@@ -1078,8 +839,6 @@ body.is-single-screen {
     padding-bottom: var(--screen-pad-y);
 }
 
-/* En una sola pantalla la barra de progreso no significa nada: la pagina
-   entera esta a la vista desde el principio. */
 body.is-single-screen .reading-progress {
     display: none;
 }
@@ -1099,12 +858,6 @@ body.is-single-screen .reading-progress {
     line-height: 1.45;
 }
 
-/* El bloque de prosa se reparte en el hueco sobrante y se recorta por abajo
-   solo si de verdad no cabe; en el caso normal conserva sus tres parrafos. */
-/* La prosa comparte medida con la frase de entrada: las dos ocupan el ancho de
-   la columna, sin tope propio, para que sus bordes derechos caigan en la misma
-   vertical. Antes la prosa se cerraba a 32em y el texto se partia antes de
-   tiempo, dejando un escalon a la derecha que se notaba mucho. */
 .is-single-screen .hero .prose {
     max-width: none;
     font-size: var(--screen-prose);
@@ -1115,16 +868,12 @@ body.is-single-screen .reading-progress {
     margin-bottom: var(--screen-para-gap);
 }
 
-/* En una ventana baja la prosa se limita a lo esencial: los dos primeros
-   parrafos siguen, el tercero es prescindible porque solo despide. */
 @media (max-height: 700px) {
     .is-single-screen .hero .prose p:last-child,
     .is-single-screen .hero .prose p:nth-last-child(2) {
         display: none;
     }
 
-    /* Las filas bajan a la cota minima de su escala: seis notas son las que
-       marcan la altura, asi que es el unico numero que hay que apretar. */
     .is-single-screen .row {
         padding: 0.1rem 0;
     }
@@ -1139,9 +888,6 @@ body.is-single-screen .reading-progress {
         margin-bottom: var(--space-3xs);
     }
 
-    /* En una ventana muy baja tambien se cierran los huecos: los minimos de la
-       escala son legibles pero no caben todos juntos, y el aire es lo primero
-       que debe ceder porque es lo que no se lee. */
     body.is-single-screen {
         padding-top: var(--space-lg);
         padding-bottom: var(--space-lg);
@@ -1160,18 +906,10 @@ body.is-single-screen .reading-progress {
     }
 }
 
-/* Una sola columna, como la suya: la prosa y los listados comparten el mismo
-   ancho y se leen de arriba abajo. Aqui no hay rejilla que repartir. */
 .home-columns {
     min-height: 0;
 }
 
-/* Cada seccion abre con aire: sin este margen superior, el rótulo se pegaba a
-   la ultima fila del listado anterior y los dos bloques se leian como uno. */
-/* Cada seccion abre con aire: sin este margen superior el rotulo se pegaba a
-   la ultima fila del listado anterior y los dos bloques se leian como uno.
-   El margen se anula solo en la primera seccion de la portada, que ya esta
-   separada del texto por el hueco del bloque. */
 .is-single-screen .section-title {
     margin: var(--screen-section-gap) 0 var(--screen-title-gap);
 }

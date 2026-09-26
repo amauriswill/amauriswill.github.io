@@ -1,13 +1,5 @@
 #!/usr/bin/env node
-/**
- * contrast-report.mjs — Informe de accesibilidad visual del sitio.
- * -----------------------------------------------------------------------------
- * Mide lo mismo que mide un escáner externo (contraste, tipografía y peso del
- * CSS) pero sobre NUESTROS tokens, y con la misma matemática que el contrato,
- * importándola desde validate-site.mjs: informe y validación nunca discrepan.
- *
- * Uso: node tools/contrast-report.mjs
- */
+
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import {
@@ -15,10 +7,8 @@ import {
     stripCssComments
 } from './validate-site.mjs';
 
-/** Tokens decorativos: separan o rellenan, no transmiten información. */
 const DECORATIVE = ['--color-line', '--color-surface', '--color-code-dark'];
 
-/** Pares que no van sobre el fondo de la página. */
 const EXTRA_PAIRS = [
     { label: 'texto del bloque de código', fg: '--code-text', bg: '--color-code-dark', min: 4.5 }
 ];

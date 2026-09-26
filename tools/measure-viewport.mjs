@@ -1,16 +1,4 @@
-/**
- * measure-viewport.mjs — Comprueba que una pagina cabe en una sola pantalla.
- * -----------------------------------------------------------------------------
- * El validador de arquitectura revisa el CSS, pero no puede saber si el
- * resultado desborda la ventana. Eso lo mide un motor de verdad: aqui se abre
- * Chrome sin interfaz, se carga la pagina a varias alturas y se lee
- * document.scrollHeight frente a la altura visible.
- *
- * Sin dependencias: se habla con Chrome por el protocolo DevTools usando solo
- * modulos nativos de Node (net, child_process, fs).
- *
- * Uso:  node tools/measure-viewport.mjs [pagina.html]
- */
+
 import { spawn } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { connect } from 'node:net';
@@ -22,15 +10,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PAGE = process.argv[2] || 'index.html';
 
-/** Alturas representativas: portatil, escritorio 1080p,_monitor alto y uno bajo. */
 const VIEWPORTS = [
     { name: 'portatil 1440x900', width: 1440, height: 900 },
     { name: 'escritorio 1920x1080', width: 1920, height: 1080 },
     { name: 'estreno 2560x1440', width: 2560, height: 1440 },
     { name: 'corta 1280x620', width: 1280, height: 620 },
-    // En movil el scroll es inevitable y aceptable: en una columna, las diez
-    // filas de los listados mas la prosa no caben en 844px sin borrar contenido.
-    // Se mide igual, pero no cuenta como fallo.
+
     { name: 'movil 390x844', width: 390, height: 844, expectScroll: true }
 ];
 
@@ -40,7 +25,6 @@ const CHROME_CANDIDATES = [
     'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe'
 ];
 
-/** Ultimo recurso: deja que el PATH resuelva el navegador. */
 const BROWSER = CHROME_CANDIDATES.find((p) => existsSync(p)) || 'chrome';
 
 const profile = mkdtempSync(join(tmpdir(), 'measure-viewport-'));
@@ -58,34 +42,30 @@ const browser = spawn(BROWSER, [
 ], { stdio: 'ignore' });
 
 function cleanup() {
-    try { browser.kill(); } catch { /* ya estaba cerrado */ }
-    try { rmSync(profile, { recursive: true, force: true }); } catch { /* temporal */ }
+    try { browser.kill(); } catch {
+ }
+    try { rmSync(profile, { recursive: true, force: true }); } catch {
+ }
 }
 
-/** Espera a que el navegador abra su puerto de depuracion. */
 async function waitForDevTools(attempts = 80) {
     for (let attempt = 0; attempt < attempts; attempt += 1) {
         try {
             const response = await fetch(`http://127.0.0.1:${port}/json/version`);
             if (response.ok) return (await response.json()).webSocketDebuggerUrl;
-        } catch { /* todavia no escucha */ }
+        } catch {
+ }
         await new Promise((r) => setTimeout(r, 250));
     }
     throw new Error('el navegador no abrio el puerto de DevTools');
 }
-/**
- * Envuelve una carga en una trama WebSocket de cliente.
- *
- * El protocolo exige que TODA trama enviada por el cliente vaya enmascarada con
- * una clave de 4 bytes. La mascara se sortea en cada envio porque el RFC 6455
- * prohibe que el servidor asuma una clave fija.
- */
+
 function frame(payload) {
     const length = payload.length;
     let header;
 
     if (length < 126) {
-        header = Buffer.from([0x81, 0x80 | length]);                 // FIN + binario
+        header = Buffer.from([0x81, 0x80 | length]);
     } else if (length < 65536) {
         header = Buffer.alloc(4);
         header[0] = 0x81;
@@ -104,14 +84,7 @@ function frame(payload) {
 
     return Buffer.concat([header, mask, masked]);
 }
-/**
- * Cliente minimo del protocolo DevTools.
- *
- * El protocolo habla WebSocket, pero aqui solo hace falta el envio de tramas
- * del cliente al servidor, asi que basta un socket TCP en el que se escriben a
- * mano la cabecera y la carga. Se evita a proposito depender de un paquete de
- * npm para no anadir nada al proyecto.
- */
+
 class DevTools {
     constructor(socket) {
         this.socket = socket;
@@ -121,14 +94,6 @@ class DevTools {
         socket.on('data', (chunk) => this.ingest(chunk));
     }
 
-    /**
-     * Acumula bytes y decodifica las tramas WebSocket que llegan.
-     *
-     * Se ignoran las tramas de control (ping, pong, close) y solo se entregan
-     * los mensajes de texto, que son los que traen las respuestas del
-     * protocolo. Si una trama llega partida entre dos lecturas, los bytes
-     * sobrantes se quedan en el buffer para la siguiente.
-     */
     ingest(chunk) {
         this.buffer = Buffer.concat([this.buffer, chunk]);
 
@@ -157,14 +122,14 @@ class DevTools {
                 offset += 4;
             }
 
-            if (this.buffer.length < offset + length) return; // trama incompleta
+            if (this.buffer.length < offset + length) return;
 
             const payload = Buffer.from(this.buffer.subarray(offset, offset + length));
             if (mask) for (let i = 0; i < payload.length; i += 1) payload[i] ^= mask[i % 4];
             this.buffer = this.buffer.subarray(offset + length);
 
-            if (opcode === 0x8) { this.socket.end(); return; }  // cierre
-            if (opcode !== 0x1) continue;                        // no es texto
+            if (opcode === 0x8) { this.socket.end(); return; }
+            if (opcode !== 0x1) continue;
 
             let message;
             try { message = JSON.parse(payload.toString()); } catch { continue; }
@@ -183,7 +148,6 @@ class DevTools {
         });
     }
 
-    /** Igual que send(), pero aplicando el id que lleva la sesion ya abierta. */
     socketRequest(sessionId, id, method, params = {}) {
         const payload = Buffer.from(JSON.stringify({ id, sessionId, method, params }));
         return new Promise((resolveCall) => {
@@ -192,7 +156,7 @@ class DevTools {
         });
     }
 }
-/** Abre el socket del DevTools y completa el saludo WebSocket a mano. */
+
 function openSocket(url) {
     return new Promise((resolveCall, rejectCall) => {
         const target = new URL(url);
@@ -221,7 +185,7 @@ function openSocket(url) {
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-/** Captura la portada renderizada para compararla a ojo con la referencia. */
+
 async function capture(client, session, fileUrl, out) {
     await session('Emulation.setDeviceMetricsOverride', {
         width: 1440, height: 900, deviceScaleFactor: 1, mobile: false
@@ -242,8 +206,7 @@ async function main() {
         flatten: true
     });
 
-    // Con flatten:true el protocolo enruta cada comando por sessionId dentro del
-    // propio mensaje; sendMessageToTarget queda obsoleto y el navegador lo rechaza.
+
     let nextId = 1;
     const session = (method, params = {}) => client.socketRequest(
         attached.sessionId, nextId++, method, params
@@ -279,7 +242,7 @@ async function main() {
             mobile: false
         });
         await session('Page.navigate', { url: fileUrl });
-        await sleep(900); // deja cargar fuentes locales antes de medir
+        await sleep(900);
 
         const probe = await session('Runtime.evaluate', {
             returnByValue: true,

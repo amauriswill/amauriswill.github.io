@@ -1,27 +1,15 @@
 #!/usr/bin/env node
-/**
- * validate-site.mjs — Pruebas de conformidad arquitectónica del portafolio.
- * -----------------------------------------------------------------------------
- * Es el "contrato ejecutable" del proyecto: comprueba que las 12 páginas
- * respeten las decisiones de arquitectura y las reglas de estilo.
- * Sin dependencias externas (solo Node >= 18).
- *
- * Uso:  node tools/validate-site.mjs
- * Salida: informe por comprobación; código de salida 1 si algo falla.
- */
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** Contrato: archivo -> enlace de navegación activo (null = la página no va en el menú). */
 const PAGES = {
     'index.html': 'index.html',
     'proyectos.html': 'proyectos.html',
     'blog.html': 'blog.html',
     'uses.html': null,
-    'photos.html': null,
     'contact.html': 'contact.html',
     'nota-cpp.html': 'blog.html',
     'nota-ia.html': 'blog.html',
@@ -31,22 +19,17 @@ const PAGES = {
     'nota-psicologia.html': 'blog.html'
 };
 
-/** Menú principal: solo lo que un reclutador necesita (el resto vive en el pie). */
 const NAV_ORDER = ['index.html', 'proyectos.html', 'blog.html', 'contact.html'];
 
-/** Enlaces del pie: perfiles y, después, las secciones secundarias.
-    El pie es un solo grupo de enlaces centrado; ya no lleva llamada a la acción. */
 const FOOTER_LINKS = [
     'mailto:amauriswillwork@gmail.com',
     'https://github.com/amauriswill',
     'https://www.linkedin.com/in/amauriswill/',
     'https://behance.net/amauriswill',
     'https://youtube.com/@amaurisfolio',
-    'uses.html',
-    'photos.html'
+    'uses.html'
 ];
 
-/** Contraste mínimo exigido por WCAG sobre el fondo, en ambos temas. */
 const CONTRAST_REQUIREMENTS = [
     { label: 'texto', fg: '--color-text', bg: '--color-bg', min: 7 },
     { label: 'texto atenuado', fg: '--color-muted', bg: '--color-bg', min: 4.5 },
@@ -55,10 +38,8 @@ const CONTRAST_REQUIREMENTS = [
 
 const STYLESHEET = 'assets/css/main.css';
 
-/** Nombre público del sitio: debe ser idéntico en la cabecera de todas las páginas. */
 const SITE_NAME = 'Amauris Willmore';
 
-/** Tokens que la capa de diseño debe exponer siempre. */
 const REQUIRED_TOKENS = [
     '--color-bg', '--color-text', '--color-muted', '--color-surface', '--color-accent',
     '--color-line', '--color-code-dark', '--font-sans', '--font-mono', '--space-lg',
@@ -70,17 +51,12 @@ const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'i
 
 const TAG_PATTERN = /<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^>"'])*?)(\/?)>/g;
 
-/* =============================================================================
- * Utilidades puras
- * ========================================================================== */
-
 function lineOf(html, index) {
     let line = 1;
     for (let i = 0; i < index; i += 1) if (html[i] === '\n') line += 1;
     return line;
 }
 
-/** Sustituye los comentarios por espacios conservando los saltos de línea. */
 function blankComments(html) {
     return html.replace(/<!--[\s\S]*?-->/g, (comment) => comment.replace(/[^\n]/g, ' '));
 }
@@ -148,10 +124,6 @@ function loadPage(file) {
     return { file, buffer, html, tags: parseTags(html), failures };
 }
 
-/* =============================================================================
- * Comprobaciones
- * ========================================================================== */
-
 function checkPagesExist(pages) {
     return [...pages.values()].flatMap((page) => page.failures);
 }
@@ -197,8 +169,6 @@ function checkDocumentShell(pages) {
             if (count !== 1) failures.push(`${file}: se esperaba un único <${name}>, hay ${count}`);
         }
 
-        /* Varias <header> son válidas (la del artículo, como en ivan.codes), pero la
-           cabecera del sitio tiene que ser exactamente una. */
         const siteHeaders = openings(tags, 'header')
             .filter((tag) => attributeValue(tag, 'class') === 'site-header');
         if (siteHeaders.length !== 1) {
@@ -234,7 +204,6 @@ function checkStyleLayer(pages) {
     return failures;
 }
 
-/** Único JavaScript permitido, siempre en archivos externos y con una tarea cada uno. */
 const JS_ENTRIES = ['assets/js/theme.js', 'assets/js/reading-progress.js'];
 
 function checkScripts(pages) {
@@ -263,7 +232,6 @@ function checkScripts(pages) {
         if (!existsSync(join(ROOT, entry))) failures.push(`${entry}: el archivo no existe`);
     }
 
-    /* Cada página lleva la barra de progreso de lectura, como en ivan.codes. */
     for (const page of pages.values()) {
         if (page.missing) continue;
         if (!openings(page.tags, 'div').some((tag) => hasAttribute(tag, 'data-reading-progress'))) {
@@ -271,13 +239,11 @@ function checkScripts(pages) {
         }
     }
 
-    /* Mejora progresiva: el interruptor se oculta sin JS y aparece con la clase .js. */
     const css = readFileSync(join(ROOT, STYLESHEET), 'utf8');
     if (!/\.js \.theme-switch/.test(css)) {
         failures.push(`${STYLESHEET}: el interruptor debe mostrarse con .js .theme-switch`);
     }
 
-    /* El interruptor es solo icono: su nombre accesible tiene que venir de aria-label. */
     for (const page of pages.values()) {
         if (page.missing) continue;
         const button = openings(page.tags, 'button').find((tag) => hasAttribute(tag, 'data-theme-switch'));
@@ -447,7 +413,7 @@ function checkSiteIdentity(pages) {
         if (page.missing) continue;
 
         const header = sliceElement(page.html, '<header', '</header>');
-        if (!header) continue; // checkNavigation ya reporta la ausencia de cabecera
+        if (!header) continue;
 
         const block = /<div class="site-title">\s*<a href="index\.html">([^<]*)<\/a>\s*<\/div>/.exec(header);
         if (!block) {
@@ -470,15 +436,12 @@ function checkDesignTokens() {
 
     const failures = [];
     const css = readFileSync(path, 'utf8');
-    /* Las comprobaciones de declaraciones se hacen sobre el código sin comentarios:
-       un comentario que documente una regla no debe activar la regla. */
     const code = stripCssComments(css);
 
     for (const token of REQUIRED_TOKENS) {
         if (!new RegExp(`\\n\\s*${token}\\s*:`).test(code)) failures.push(`${STYLESHEET}: falta el token ${token}`);
     }
 
-    /* Estructura del tema: claro por defecto y un único atributo para el oscuro. */
     if (!/color-scheme:\s*light\s*;/.test(code)) {
         failures.push(`${STYLESHEET}: :root debe declarar "color-scheme: light" (tema claro por defecto)`);
     }
@@ -492,8 +455,6 @@ function checkDesignTokens() {
         failures.push(`${STYLESHEET}: los tokens de color deben usar light-dark()`);
     }
 
-    /* La línea de los enlaces entra desde la derecha y dura 150ms: es el requisito
-       de interacción del proyecto, no un detalle de estilo. */
     if (!/background-position:\s*right/.test(code)) {
         failures.push(`${STYLESHEET}: la línea de los enlaces debe entrar desde la derecha`);
     }
@@ -501,7 +462,6 @@ function checkDesignTokens() {
         failures.push(`${STYLESHEET}: la animación de la línea debe durar 150ms`);
     }
 
-    /* Las tipografías son locales: nada de peticiones a terceros desde el CSS. */
     for (const match of code.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/g)) {
         const reference = match[1];
         if (/^(https?:)?\/\//.test(reference)) {
@@ -531,10 +491,6 @@ function checkDesignTokens() {
     return failures;
 }
 
-/* =============================================================================
- * Contraste de color
- * ========================================================================== */
-
 function relativeLuminance(hex) {
     const value = hex.trim().replace('#', '');
     const channels = [0, 2, 4]
@@ -553,7 +509,6 @@ function contrastRatio(foreground, background) {
     return (lighter + 0.05) / (darker + 0.05);
 }
 
-/** Resuelve un token con light-dark() al color del tema pedido. */
 function themeColor(value, theme) {
     const pair = /^light-dark\(\s*(#[0-9a-f]{3,8})\s*,\s*(#[0-9a-f]{3,8})\s*\)$/i.exec(value.trim());
     if (!pair) return value.trim();
@@ -568,7 +523,6 @@ function tokensOf(block) {
     return tokens;
 }
 
-/** Tokens declarados en el bloque :root (los de :root[data-theme] no llevan valores). */
 function rootTokens(code) {
     const block = /^:root\s*\{([\s\S]*?)\n\}/m.exec(code);
     return tokensOf(block ? block[1] : '');
@@ -605,10 +559,6 @@ function checkThemeContrast() {
 
     return failures;
 }
-
-/* =============================================================================
- * Ejecución
- * ========================================================================== */
 
 const CHECKS = [
     ['1. Existencia de las 12 páginas en la raíz', checkPagesExist],
@@ -648,18 +598,11 @@ function main() {
     process.exit(failed === 0 ? 0 : 1);
 }
 
-/* Exportado para que otras herramientas (tools/contrast-report.mjs) usen la misma
-   matemática y los mismos tokens: el informe y el contrato no pueden discrepar. */
 export {
     ROOT, STYLESHEET, CONTRAST_REQUIREMENTS, contrastRatio, themeColor, tokensOf,
     rootTokens, stripCssComments
 };
 
-/* Solo se ejecuta el contrato cuando se lanza este archivo como CLI. */
 if (process.argv[1] && process.argv[1].replace(/\\/g, '/').endsWith('validate-site.mjs')) {
     main();
 }
-
-
-
-
