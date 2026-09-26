@@ -27,6 +27,7 @@ Inter + IBM Plex Mono auto-alojadas y tema claro/oscuro con interruptor.
 ├── assets/img/           Fotografías del sitio (convención en su README)
 ├── tools/validate-site.mjs  Pruebas de conformidad arquitectónica
 ├── tools/contrast-report.mjs  Informe de contraste, tipografía y peso del CSS
+├── tools/measure-viewport.mjs  Mide en Chrome si la portada cabe en una pantalla
 └── .nojekyll             Evita el procesado de Jekyll en GitHub Pages
 ```
 
@@ -80,6 +81,7 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 ```bash
 node tools/validate-site.mjs      # contrato: falla con código 1 si algo se rompe
 node tools/contrast-report.mjs    # informe legible de accesibilidad
+node tools/measure-viewport.mjs    # comprueba en Chrome que la portada cabe en una pantalla
 ```
 
 El segundo imprime el contraste de cada par en los dos temas, las tipografías en uso y el peso
@@ -259,3 +261,36 @@ La página `photos.html` usa el componente `.gallery` / `.photo`. Cada serie es 
 El repositorio corresponde a `https://github.com/amauriswill/amauriswill.github.io`,
 por lo que GitHub Pages publica la rama `main` desde la raíz. La presencia de
 `.nojekyll` hace que los archivos se sirvan tal cual, sin procesado de plantillas.
+## La portada cabe en una sola pantalla
+
+`index.html` se lee entera sin scroll: es la idea que se toma de `ivan.codes`, donde
+la portada es un indice corto que se agota de un vistazo.
+
+Se sostiene con tres decisiones, todas en la capa 8 de `assets/css/main.css`:
+
+1. `body` es una columna flex de altura completa, con cabecera y pie fijos y el
+   contenido repartido en el espacio sobrante.
+2. Los dos listados van en paralelo con `auto-fit`, no apilados. Apilados, la
+   altura seguiria al numero de filas y dejaria de caber en pantallas cortas.
+3. La escala tipografica y los huecos se miden en `vh` con `clamp()`, asi que en
+   una ventana baja el sitio se comprime en lugar de desbordarse.
+
+**Deliberadamente no se usa `overflow: hidden`.** Recortar dejaria fuera filas y
+enlaces al ampliar el zoom o en pantallas muy bajas, que es justo lo que un
+reclutador con lupa no deberia encontrar. Si el viewport es mas bajo que lo que
+el texto necesita, la pagina se hace mas alta: se prefiere scroll a contenido
+invisible.
+
+En movil (390x844) el scroll sigue siendo necesario: en una sola columna, las diez
+filas de los listados mas la prosa no caben sin borrar contenido. Ahi se acepta.
+
+Como el validador de arquitectura no puede saber si algo desborda, la medicion se
+hace con un motor de verdad:
+
+```
+node tools/measure-viewport.mjs          # portada: sin scroll en escritorio
+node tools/measure-viewport.mjs blog.html   # paginas interiores: si deben hacer scroll
+```
+
+Abre Chrome sin interfaz, carga la pagina a cinco tamanos y compara
+`document.scrollHeight` con la altura visible.

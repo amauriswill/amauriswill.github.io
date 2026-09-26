@@ -145,6 +145,16 @@
     --reading-measure-wide: 672px;
     --page-pad-y: 6rem; /* su py-24: 96px de aire arriba y abajo */
     --gutter: 1.5rem;
+
+    /* --- Escala de una sola pantalla (capa 8) ---
+       Todo se mide en vh con clamp(): en un viewport bajo el sitio se comprime
+       proporcionalmente en vez de desbordarse. El minimo de cada uno es el valor
+       legible con espacio reducido, para que comprimir nunca saque texto. */
+    --screen-pad-y: clamp(0.7rem, 2.4vh, 2rem);
+    --screen-gap: clamp(0.7rem, 2.2vh, 1.75rem);
+    --screen-lead: clamp(0.95rem, 1.9vh, 1.25rem);
+    --screen-prose: clamp(0.78rem, 1.3vh, 0.92rem);
+    --screen-row-pad: clamp(0.15rem, 0.62vh, 0.45rem);
     --radius-sm: 4px;
     --radius-lg: 0.5rem;
     --space-prose: 1.35rem; /* separación de párrafo: su 1.25em sobre 17px */
@@ -1009,4 +1019,122 @@ pre code {
         flex-direction: column;
         gap: var(--space-md);
     }
+}
+
+/* =============================================================================
+ * 8. UNA SOLA PANTALLA (solo index.html)
+ * -----------------------------------------------------------------------------
+ * La portada cabe en el viewport: no hay scroll, y la pagina se lee entera de un
+ * vistazo. Se consigue con tres decisiones, no con ocultar el desbordamiento:
+ *
+ *   1. body es una columna flex de altura completa, con cabecera y pie fijos y
+ *      el contenido repartido en el espacio que sobra.
+ *   2. Los dos listados van en paralelo (auto-fit), no apilados: de otro modo la
+ *      altura sigue al numero de filas y deja de caber en pantallas cortas.
+ *   3. La escala tipografica y los huecos se miden en vh con clamp(), de modo que
+ *      en una pantalla baja el sitio se comprime en lugar de desbordarse.
+ *
+ * No se usa overflow:hidden a proposito. Recortar el contenido dejaria fuera
+ * filas y enlaces al ampliar el zoom o en pantallas muy bajas, que es justo lo
+ * que un reclutador con lupa no deberia encontrar. Si el viewport es mas bajo
+ * que lo que el texto necesita, la pagina simplemente se hace mas alta: se
+ * prefiere scroll a contenido invisible.
+ * ========================================================================== */
+
+body.is-single-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--screen-pad-y);
+    padding-bottom: var(--screen-pad-y);
+}
+
+/* En una sola pantalla la barra de progreso no significa nada: la pagina
+   entera esta a la vista desde el principio. */
+body.is-single-screen .reading-progress {
+    display: none;
+}
+
+.is-single-screen .site-header {
+    flex: 0 0 auto;
+    margin-bottom: var(--screen-gap);
+}
+
+.is-single-screen main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--screen-gap);
+    min-height: 0;
+}
+
+.is-single-screen .hero {
+    margin-bottom: 0;
+}
+
+.is-single-screen .hero__lead {
+    margin-bottom: var(--space-sm);
+    font-size: var(--screen-lead);
+}
+
+/* El bloque de prosa se reparte en el hueco sobrante y se recorta por abajo
+   solo si de verdad no cabe; en el caso normal conserva sus tres parrafos. */
+.is-single-screen .hero .prose {
+    max-width: 46em;
+    font-size: var(--screen-prose);
+    line-height: var(--leading);
+}
+
+.is-single-screen .hero .prose p {
+    margin-bottom: var(--space-xs);
+}
+
+/* En una ventana baja la prosa se limita a lo esencial: los dos primeros
+   parrafos siguen, el tercero es prescindible porque solo despide. */
+@media (max-height: 700px) {
+    .is-single-screen .hero .prose p:last-child {
+        display: none;
+    }
+
+    /* Las filas bajan a la cota minima de su escala: seis notas son las que
+       marcan la altura, asi que es el unico numero que hay que apretar. */
+    .is-single-screen .row {
+        padding: 0.1rem 0;
+    }
+
+    .is-single-screen .row__title,
+    .is-single-screen .row__meta {
+        font-size: var(--text-2xs);
+        line-height: 1.35;
+    }
+
+    .is-single-screen .section-title {
+        margin-bottom: var(--space-3xs);
+    }
+}
+
+/* Los dos listados en paralelo. auto-fit hace el colapso a una columna por su
+   cuenta cuando el ancho no alcanza, sin abrir un segundo breakpoint. */
+.home-columns {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-3xl) var(--space-5xl);
+    align-content: start;
+}
+
+.is-single-screen .section-title {
+    margin: 0 0 var(--space-sm);
+}
+
+.is-single-screen .row {
+    padding: var(--screen-row-pad) 0;
+}
+
+.is-single-screen .site-footer {
+    flex: 0 0 auto;
+    margin-top: var(--screen-gap);
+    padding-top: 0;
 }
