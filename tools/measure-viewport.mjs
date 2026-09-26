@@ -258,6 +258,20 @@ async function main() {
     console.log(`measure-viewport — ${PAGE}\n`);
 
     for (const viewport of VIEWPORTS) {
+        console.log('');        if (process.env.MEASURE_PROBE) {
+            const info = await session('Runtime.evaluate', {
+                returnByValue: true,
+                expression: '(function () { var out = [];'
+                    + ' var sel = "body, body > header, .hero .prose, .site-footer";'
+                    + ' Array.prototype.forEach.call(document.querySelectorAll(sel), function (el) {'
+                    + '   var r = el.getBoundingClientRect();'
+                    + '   out.push([el.className || el.tagName, Math.round(r.top), Math.round(r.height)]); });'
+                    + ' return JSON.stringify(out); })()'
+            });
+            for (const r of JSON.parse(info.result.result.value)) {
+                console.log('           ', r[0], 'top=' + r[1], 'alto=' + r[2]);
+            }
+        }
         await session('Emulation.setDeviceMetricsOverride', {
             width: viewport.width,
             height: viewport.height,
@@ -291,6 +305,10 @@ async function main() {
         ? '\nRESULTADO GLOBAL: cabe en una sola pantalla en todos los tama\u00f1os'
         : `\nRESULTADO GLOBAL: hay scroll en ${overflows} de ${VIEWPORTS.length} tamaños`);
 
+    if (process.env.MEASURE_SHOT) {
+        await capture(client, session, fileUrl, resolve(ROOT, process.env.MEASURE_SHOT));
+        console.log('        captura guardada en ' + process.env.MEASURE_SHOT);
+    }
     cleanup();
     process.exit(overflows === 0 ? 0 : 1);
 }

@@ -268,12 +268,16 @@ la portada es un indice corto que se agota de un vistazo.
 
 Se sostiene con tres decisiones, todas en la capa 8 de `assets/css/main.css`:
 
-1. `body` es una columna flex de altura completa, con cabecera y pie fijos y el
-   contenido repartido en el espacio sobrante.
-2. Los dos listados van en paralelo con `auto-fit`, no apilados. Apilados, la
-   altura seguiria al numero de filas y dejaria de caber en pantallas cortas.
+1. `body` es una columna flex de altura completa y el pie **sigue al contenido**
+   en lugar de anclarse al borde inferior. Anclarlo dejaba un vacio de mas de
+   200px entre el ultimo listado y el pie: es lo mas visible que habia.
+2. Una sola columna, como la suya: la prosa y los listados comparten el mismo
+   ancho de lectura. La prosa se mide a `32em`, mas estrecha que la columna.
 3. La escala tipografica y los huecos se miden en `vh` con `clamp()`, asi que en
    una ventana baja el sitio se comprime en lugar de desbordarse.
+
+La altura la fija el contenido: por eso la portada lleva cuatro proyectos y cinco
+notas en vez de los seis de cada listada. La sexta nota vive en `blog.html`.
 
 **Deliberadamente no se usa `overflow: hidden`.** Recortar dejaria fuera filas y
 enlaces al ampliar el zoom o en pantallas muy bajas, que es justo lo que un
