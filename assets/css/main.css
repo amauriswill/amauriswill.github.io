@@ -92,12 +92,12 @@
     --gutter: 1.5rem;
 
     --screen-pad-y: clamp(0.75rem, 3.4vh, 2.4rem);
-    --screen-header-gap: clamp(1.1rem, 5.5vh, 3.5rem);
+    --screen-header-gap: clamp(0.9rem, 4.6vh, 2.9rem);
     --screen-lead-gap: clamp(0.8rem, 2.9vh, 2rem);
-    --screen-para-gap: clamp(0.4rem, 1.55vh, 1.1rem);
+    --screen-para-gap: clamp(0.35rem, 1.3vh, 0.95rem);
     --screen-section-gap: clamp(0.8rem, 3.7vh, 2.5rem);
     --screen-title-gap: clamp(0.35rem, 2.2vh, 1.3rem);
-    --screen-footer-gap: clamp(0.7rem, 3.2vh, 2.4rem);
+    --screen-footer-gap: clamp(0.5rem, 2.2vh, 1.6rem);
     --screen-lead: clamp(0.92rem, 1.55vh, 1.02rem);
     --screen-prose: clamp(0.82rem, 1.45vh, 0.95rem);
     --screen-row-pad: clamp(0.12rem, 0.56vh, 0.46rem);
@@ -603,6 +603,82 @@ body:not(.is-single-screen) {
     margin: 0;
     font-size: var(--text-base);
     color: var(--color-muted);
+}
+
+.podcast-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg) 0;
+}
+
+.podcast-card__title {
+    display: flex;
+    align-items: baseline;
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text);
+}
+
+.podcast-card__title::after {
+    content: "";
+    flex: 1 1 auto;
+    min-width: var(--space-lg);
+    height: 1px;
+    background-color: var(--color-line);
+}
+
+.podcast-card__meta {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-muted);
+    white-space: nowrap;
+}
+
+.podcast-card__desc {
+    margin: 0;
+    font-size: var(--text-base);
+    color: var(--color-muted);
+}
+
+.podcast-card__frame {
+    width: 100%;
+    max-width: 100%;
+    border: 0;
+    border-radius: var(--radius-sm);
+    display: block;
+}
+
+.podcast-bar {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-2xs);
+    padding-top: var(--space-2xs);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-2xs);
+}
+
+.podcast-bar__title {
+    font-family: var(--font-mono);
+    color: var(--color-text);
+}
+
+.podcast-bar__meta {
+    color: var(--color-muted);
+}
+
+.podcast-bar__cta {
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.podcast-bar__cta:hover {
+    color: var(--color-accent);
 }
 
 
