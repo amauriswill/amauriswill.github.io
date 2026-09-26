@@ -26,6 +26,7 @@
     --color-link: #000000;
     --color-border: #eaeaea;
     --color-code-bg: #eaeaea;
+    --color-tag-bg: #eeeeee;
 
     /* --- Tipografía --- */
     --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -33,6 +34,7 @@
     --weight-regular: 400;
     --weight-medium: 500;
     --weight-semibold: 600;
+    --text-2xs: 0.75rem;
     --text-xs: 0.85rem;
     --text-sm: 0.9rem;
     --text-base: 0.95rem;
@@ -75,6 +77,7 @@
         --color-link: #ffffff;
         --color-border: #333333;
         --color-code-bg: #1a1a1a;
+        --color-tag-bg: #222222;
     }
 }
 
@@ -295,6 +298,48 @@ pre {
 
 .entry--detail .entry__meta {
     margin-top: var(--space-3xs);
+}
+
+/* Variante de la página "uses": entrada apilada a ancho completo y con etiquetas. */
+.entry--block {
+    flex-direction: column;
+    gap: var(--space-3xs);
+    padding: var(--space-xl) 0;
+}
+
+.entry--block .entry__body {
+    max-width: 100%;
+}
+
+.entry--block .entry__title {
+    margin-bottom: var(--space-3xs);
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+}
+
+.entry--block .entry__desc {
+    margin-top: 0;
+}
+
+/* --- 4.4 Etiquetas --- */
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+/* Relleno 0.2rem / 0.6rem: el paso de 0.6rem se compone con la escala de espaciado. */
+.tag {
+    padding: var(--space-3xs) calc(var(--space-xs) + var(--space-3xs));
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.02em;
+    color: var(--color-text);
+    background-color: var(--color-tag-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
 }
 
 /* --- 4.4 Proyectos --- */

@@ -7,7 +7,7 @@ columna, tipografía nativa del sistema y modo oscuro automático por CSS.
 
 ```
 /                      10 páginas HTML en la raíz (contrato de publicación)
-├── index.html            Portada: bio, trayectoria destacada y últimas notas
+├── index.html            Portada: bio, experiencia destacada y educación
 ├── proyectos.html        Trayectoria completa (5 proyectos)
 ├── notas.html            Índice de apuntes (6 artículos)
 ├── nota-cpp.html         Artículo: subprocesos y Direct2D en C++
@@ -29,7 +29,7 @@ columna, tipografía nativa del sistema y modo oscuro automático por CSS.
 | Tokens de diseño | `main.css` §1 | Única fuente de verdad de color, tipografía, espaciado y medida de lectura |
 | Reset mínimo | `main.css` §2 | Normalización local, sin frameworks ni dependencias |
 | Elementos base | `main.css` §3 | Tipografía, enlaces y ritmo vertical de la prosa |
-| Layout y componentes | `main.css` §4 | `.site-header`, `.page-title`, `.section-title`, `.subtitle`, `.entry`, `.project`, `.article`, `.site-footer` |
+| Layout y componentes | `main.css` §4 | `.site-header`, `.page-title`, `.section-title`, `.subtitle`, `.entry`, `.project`, `.article`, `.tags` / `.tag`, `.site-footer` |
 | Responsive | `main.css` §5 | Un único breakpoint en 550px |
 | Contenido | los 10 `*.html` | Markup semántico sin presentación ni comportamiento |
 | Contrato verificable | `tools/validate-site.mjs` | Impide que las capas se mezclen o se degraden con el tiempo |
@@ -43,8 +43,9 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 2. Cero JavaScript: el sitio es completamente estático.
 3. Sin `!important`, sin selectores de ID, sin valores mágicos (todo valor visual es un token).
 4. Convención de nombres **BEM-lite**: `.bloque`, `.bloque__elemento`, `.bloque--variante`.
-5. Un componente resuelve un solo patrón visual: `.entry` cubre las filas con metadato
-   (portada y notas) y `.entry--detail` es su variante con descripción.
+5. Un componente resuelve un solo patrón visual: `.entry` cubre las filas con
+   metadato, `.entry--detail` es su variante con descripción, `.entry--block` la
+   entrada apilada con etiquetas y `.project` el bloque con rol y descripción.
 6. El estado de la página activa se expresa con `aria-current="page"` (semántica y
    accesibilidad), no con una clase adjetiva.
 7. Cabecera y pie son **contratos idénticos** en las 10 páginas y están verificados por el test.

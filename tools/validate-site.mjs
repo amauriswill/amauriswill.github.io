@@ -47,7 +47,8 @@ const SITE_NAME = 'Amauris Willmore';
 /** Tokens que la capa de diseño debe exponer siempre. */
 const REQUIRED_TOKENS = [
     '--color-bg', '--color-text', '--color-muted', '--color-link', '--color-border',
-    '--font-sans', '--font-mono', '--space-lg', '--text-base', '--reading-measure'
+    '--color-tag-bg', '--font-sans', '--font-mono', '--space-lg', '--text-base',
+    '--reading-measure'
 ];
 
 const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',

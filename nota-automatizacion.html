@@ -28,10 +28,10 @@
                 <p>Mantener un entorno de desarrollo funcional puede convertirse rápidamente en una tarea tediosa, especialmente cuando dependes de herramientas de software muy específicas que no deben actualizarse accidentalmente y romper compatibilidades.</p>
 
                 <h2>El problema de la actualización masiva</h2>
-                <p>El gestor de paquetes de Windows es útil, pero destructivo si haces un upgrade global. Si estás a mitad de un proyecto musical o de desarrollo, no quieres que Ableton Live o la terminal cambien de versión repentinamente.</p>
+                <p>El gestor de paquetes <code>winget upgrade --all</code> es útil, pero destructivo. Si estás a mitad de un proyecto musical o de desarrollo, no quieres que Ableton Live o la terminal Warp cambien de versión repentinamente.</p>
 
                 <h2>La solución con Regex</h2>
-                <p>Diseñé un flujo híbrido utilizando scripts <strong>Batch</strong> y <strong>PowerShell</strong>. El script analiza el inventario de software actual, aplica filtros de expresiones regulares (regex) para ignorar coincidencias exactas como "Ableton Live", y luego actualiza sistemáticamente todo lo demás de fondo. Esto me permite mantener el sistema seguro sin comprometer las dependencias críticas de mis DAWs.</p>
+                <p>Diseñé un flujo híbrido utilizando scripts <strong>Batch</strong> y <strong>PowerShell</strong>. El script analiza el inventario de software actual, aplica filtros de expresiones regulares (regex) para ignorar coincidencias exactas como "Ableton Live" y "Warp", y luego actualiza sistemáticamente todo lo demás de fondo. Esto me permite mantener el sistema seguro sin comprometer las dependencias críticas de mis DAWs.</p>
 
                 <a class="article__back" href="notas.html">← Volver a notas</a>
             </div>
