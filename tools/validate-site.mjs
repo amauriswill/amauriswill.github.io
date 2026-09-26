@@ -47,8 +47,7 @@ const SITE_NAME = 'Amauris Willmore';
 /** Tokens que la capa de diseño debe exponer siempre. */
 const REQUIRED_TOKENS = [
     '--color-bg', '--color-text', '--color-muted', '--color-link', '--color-border',
-    '--color-tag-bg', '--font-sans', '--font-mono', '--space-lg', '--text-base',
-    '--reading-measure'
+    '--font-sans', '--font-mono', '--space-lg', '--text-base', '--reading-measure'
 ];
 
 const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
@@ -420,6 +419,9 @@ function checkDesignTokens() {
     const used = new Set([...code.matchAll(/var\(\s*(--[\w-]+)/g)].map((match) => match[1]));
     for (const token of used) {
         if (!declared.has(token)) failures.push(`${STYLESHEET}: se usa ${token} sin declararlo en los tokens`);
+    }
+    for (const token of declared) {
+        if (!used.has(token)) failures.push(`${STYLESHEET}: el token ${token} se declara pero no se usa (código muerto)`);
     }
 
     return failures;
