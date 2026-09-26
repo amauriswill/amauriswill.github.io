@@ -128,6 +128,14 @@
     animation: fade-in-down 161ms ease-in-out both;
 }
 
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-new(root) {
+    animation: fade-in-down 161ms ease-in-out both;
+}
+
 
 *,
 *::before,
@@ -203,6 +211,11 @@ a:hover {
     }
 
     .is-single-screen main {
+        animation: none;
+    }
+
+    ::view-transition-new(root),
+    ::view-transition-old(root) {
         animation: none;
     }
 }
