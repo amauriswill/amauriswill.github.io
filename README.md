@@ -1,7 +1,7 @@
 # amauriswill.github.io
 
-Portafolio personal de **Amauris Willmore Medrano**: sitio estático de una sola
-columna, tipografía nativa del sistema y modo oscuro automático por CSS.
+Portafolio personal de **Amauris Willmore Medrano**: sitio estático de una sola columna,
+tipografías Google Sans auto-alojadas y tema claro/oscuro con interruptor.
 
 ## Mapa del repositorio
 
@@ -20,6 +20,8 @@ columna, tipografía nativa del sistema y modo oscuro automático por CSS.
 ├── nota-educacion.html
 ├── nota-psicologia.html
 ├── assets/css/main.css   Capa de presentación única (tokens + componentes)
+├── assets/fonts/         Google Sans Flex y Google Sans Code (woff2, subconjunto latino)
+├── assets/js/theme.js    Único JavaScript: el interruptor de tema
 ├── assets/img/           Fotografías del sitio (convención en su README)
 ├── tools/validate-site.mjs  Pruebas de conformidad arquitectónica
 └── .nojekyll             Evita el procesado de Jekyll en GitHub Pages
@@ -29,13 +31,15 @@ columna, tipografía nativa del sistema y modo oscuro automático por CSS.
 
 | Capa | Dónde vive | Responsabilidad |
 |---|---|---|
-| Tokens de diseño | `main.css` §1 | Única fuente de verdad de color, tipografía, espaciado y medida de lectura |
+| Tipografías | `main.css` §0 | `@font-face` de Google Sans Flex y Google Sans Code, auto-alojadas |
+| Tokens de diseño | `main.css` §1 | Única fuente de verdad de color, tipografía, espaciado y medidas de lectura |
 | Reset mínimo | `main.css` §2 | Normalización local, sin frameworks ni dependencias |
-| Elementos base | `main.css` §3 | Tipografía, enlaces y ritmo vertical de la prosa |
-| Layout y componentes | `main.css` §4 | `.site-header`, `.page-title`, `.section-title`, `.subtitle`, `.entry`, `.project`, `.article`, `.tags` / `.tag`, `.gallery` / `.photo`, `.section-more`, `.credentials`, `.site-footer` |
+| Elementos base | `main.css` §3 | Tipografía, enlaces, ritmo de prosa y columnas de lectura |
+| Layout y componentes | `main.css` §4 | `.site-header`, `.theme-switch`, `.page-title`, `.section-title`, `.subtitle`, `.entry`, `.project`, `.article`, `.tags` / `.tag`, `.gallery` / `.photo`, `.section-more`, `.credentials`, `.site-footer` |
 | Utilidades | `main.css` §5 | `.visually-hidden` (contenido solo para lectores de pantalla y buscadores) |
-| Responsive | `main.css` §5 | Un único breakpoint en 550px |
-| Contenido | los 10 `*.html` | Markup semántico sin presentación ni comportamiento |
+| Responsive | `main.css` §6 | Un único breakpoint en 550px |
+| Comportamiento | `assets/js/theme.js` | Interruptor de tema; sin él, el sitio sigue el sistema |
+| Contenido | los 12 `*.html` | Markup semántico sin presentación |
 | Contrato verificable | `tools/validate-site.mjs` | Impide que las capas se mezclen o se degraden con el tiempo |
 
 La regla de dependencia es de fuera hacia dentro: **el HTML depende de la hoja de
@@ -44,7 +48,8 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 ## Reglas del proyecto (Clean Code)
 
 1. Cero CSS embebido y cero atributos `style` en línea.
-2. Cero JavaScript: el sitio es completamente estático.
+2. JavaScript mínimo y externo: el único archivo es `assets/js/theme.js`, nunca
+   `<script>` en línea ni manejadores `on*` en atributos.
 3. Sin `!important`, sin selectores de ID, sin valores mágicos (todo valor visual es un token).
 4. Convención de nombres **BEM-lite**: `.bloque`, `.bloque__elemento`, `.bloque--variante`.
 5. Un componente resuelve un solo patrón visual: `.entry` cubre las filas con
@@ -59,6 +64,12 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 9. UTF-8 sin BOM en todos los archivos.
 10. Cada tema cumple contraste mínimo sobre el fondo: texto 7:1, texto atenuado y enlace 4.5:1,
     subrayado 3:1. El test calcula los ratios y falla si alguno baja del mínimo.
+11. **Sin bordes decorativos**: el texto se separa con espacio. Solo se dibujan líneas que
+    identifican un control (el subrayado de los enlaces y el carril del interruptor) y siempre
+    con `--color-underline`, que supera 3:1.
+12. Cada token de color se declara **una sola vez** con `light-dark(claro, oscuro)`; el tema
+    activo lo decide `color-scheme`, que el interruptor fija con `:root[data-theme]`.
+13. Las tipografías son locales: nada de peticiones a Google ni a ningún otro tercero.
 
 ## Validación
 
@@ -66,11 +77,11 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 node tools/validate-site.mjs
 ```
 
-Comprueba: existencia de las 12 páginas, UTF-8 sin BOM, esqueleto del documento,
-capa de estilos externa, ausencia de JavaScript, anidamiento de etiquetas, enlaces
-internos resueltos, contrato de navegación, contrato de pie de página, contrato de
-identidad (el nombre público del sitio, `Amauris Willmore`, debe ser idéntico en la
-cabecera de todas las páginas), los tokens de diseño y el contraste de ambos temas.
+Comprueba: existencia de las 12 páginas, UTF-8 sin BOM, esqueleto del documento, capa de
+estilos externa, JavaScript acotado a `assets/js/theme.js`, anidamiento de etiquetas, enlaces
+internos resueltos, contrato de navegación, contrato de pie de página, contrato de identidad
+(el nombre público del sitio, `Amauris Willmore`, debe ser idéntico en la cabecera de todas
+las páginas), tokens de diseño, tipografías locales y contraste de ambos temas.
 El proceso devuelve código de salida `1` si alguna comprobación falla.
 
 Para previsualizar en local:
@@ -78,6 +89,38 @@ Para previsualizar en local:
 ```bash
 python -m http.server 8000    # luego abrir http://localhost:8000
 ```
+
+## Tema claro y oscuro
+
+- Por defecto manda el sistema (`prefers-color-scheme`), sin JavaScript.
+- El interruptor de la cabecera (`role="switch"`, con `aria-checked`) fija la preferencia y la
+  guarda en `localStorage` con la clave `theme`.
+- `data-theme` solo se escribe en `<html>` cuando la elección **difiere** del sistema; si no, se
+  retira y `:root` vuelve a valer `color-scheme: light dark`.
+- Los colores se declaran una sola vez con `light-dark(claro, oscuro)`, así que el tema oscuro no
+  duplica bloque: el valor que se usa depende del `color-scheme` resuelto.
+- Con `light-dark()` no soportado, cada token tiene antes una declaración de reserva con el valor
+  claro: el sitio se mantiene legible aunque el interruptor no funcione.
+
+## Tipografías
+
+`Google Sans Flex` (texto) y `Google Sans Code` (código) están **auto-alojadas** en `assets/fonts/`
+con el subconjunto latino: 117 KB + 34 KB, sin peticiones a Google en cada visita. Se sirven con
+`font-display: swap` y `font-optical-sizing: auto` para que el eje `opsz` afine las formas al
+tamaño de lectura.
+
+El subconjunto latino no incluye las flechas `U+2190`/`U+2192`, así que el sitio usa comillas
+angulares (`»`, `«`) en los enlaces de continuar y de volver, que además encajan mejor con la
+tipografía editorial.
+
+## La experiencia de lectura
+
+- Contenedor de 660 px (≈74 caracteres) y columna de prosa de `64ch` en los artículos: dentro del
+  rango cómodo de 60-75 caracteres por línea.
+- Prosa a 1,05 rem con interlineado 1,7, frente al 1,6 de la interfaz.
+- `text-wrap: balance` en los títulos y `text-wrap: pretty` en los párrafos, para no dejar
+  palabras huérfanas ni líneas muy cortas al final.
+- Separación por espacio, nunca por líneas decorativas, y `::selection` con los tokens del tema.
 
 ## Cómo añadir una nota nueva
 

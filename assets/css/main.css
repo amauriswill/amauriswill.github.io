@@ -2,6 +2,7 @@
  * main.css — Hoja de estilos única del portafolio de Amauris Willmore
  * -----------------------------------------------------------------------------
  * Arquitectura por capas, de lo abstracto a lo concreto:
+ *   0. Tipografías           -> @font-face locales, sin peticiones a terceros
  *   1. Tokens de diseño       -> única fuente de verdad (color, tipografía, escala)
  *   2. Reset mínimo           -> normalización local, sin dependencias externas
  *   3. Elementos base         -> tipografía, enlaces y prosa por defecto
@@ -10,33 +11,73 @@
  *   6. Responsive             -> un único breakpoint (550px)
  *
  * Reglas del proyecto:
- *   - Sin estilos en línea, sin <style> embebido, sin JavaScript, sin !important.
+ *   - Sin estilos en línea, sin <style> embebido y sin JavaScript en línea.
+ *   - Sin !important y sin selectores de ID.
+ *   - Cada tema se declara UNA sola vez con light-dark(); el tema activo lo decide
+ *     color-scheme, que el interruptor fija con :root[data-theme="..."].
+ *   - No hay bordes decorativos: el texto se separa con espacio. Solo se dibujan
+ *     líneas que superan 3:1 porque identifican un control.
  *   - Convención de nombres BEM-lite: .bloque, .bloque__elemento, .bloque--variante.
  *   - Todo valor visual nuevo debe expresarse con un token de la capa 1.
  * ========================================================================== */
+
+/* =============================================================================
+ * 0. TIPOGRAFÍAS
+ * -----------------------------------------------------------------------------
+ * Google Sans Flex (variable) para el texto y Google Sans Code para el código,
+ * auto-alojadas en assets/fonts con el subconjunto latino: cero peticiones a
+ * terceros y cero dependencia de red externa. font-display: swap evita el
+ * pantallazo en blanco mientras llegan.
+ * ========================================================================== */
+
+@font-face {
+    font-family: "Google Sans Flex";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("../fonts/google-sans-flex-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Google Sans Code";
+    font-style: normal;
+    font-weight: 300 800;
+    font-display: swap;
+    src: url("../fonts/google-sans-code-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 /* =============================================================================
  * 1. TOKENS DE DISEÑO
  * ========================================================================== */
 
 :root {
-    /* Le dice al navegador cómo pintar los controles nativos y la barra de scroll. */
-    color-scheme: light;
+    /* Sin data-theme manda la preferencia del sistema. */
+    color-scheme: light dark;
 
-    /* --- Color (el modo oscuro solo redefine esta sección) ---
-       Contrastes mínimos exigidos por tools/validate-site.mjs sobre el fondo:
+    /* --- Color ---
+       Cada token declara los dos temas con light-dark(), así que el oscuro no
+       duplica bloque. La primera línea de cada par es el respaldo para
+       navegadores que ignoran light-dark(); ahí el sitio se queda en claro.
+       Mínimos que tools/validate-site.mjs exige sobre el fondo:
        texto >= 7:1 · atenuado >= 4.5:1 · enlace >= 4.5:1 · subrayado >= 3:1 */
     --color-bg: #fafafa;
-    --color-text: #111111;      /* 18.1:1 */
-    --color-muted: #5c5c5c;     /* 6.4:1  (antes #666666, 5.5:1) */
-    --color-link: #000000;      /* 20.1:1 */
-    --color-border: #eaeaea;    /* decorativo: separadores, nunca controles */
-    --color-underline: #8c8c8c; /* 3.2:1  el subrayado es la señal del enlace */
-    --color-code-bg: #eaeaea;
+    --color-bg: light-dark(#fafafa, #111111);
+    --color-text: #111111;
+    --color-text: light-dark(#111111, #eeeeee);      /* 18.1:1 claro · 16.3:1 oscuro */
+    --color-muted: #5c5c5c;
+    --color-muted: light-dark(#5c5c5c, #999999);     /* 6.4:1 · 6.6:1 */
+    --color-link: #000000;
+    --color-link: light-dark(#000000, #ffffff);      /* 20.1:1 · 18.9:1 */
+    --color-underline: #8c8c8c;
+    --color-underline: light-dark(#8c8c8c, #666666); /* 3.2:1 · 3.3:1 */
+    --color-surface: #eaeaea;
+    --color-surface: light-dark(#eaeaea, #1a1a1a);   /* código y huecos de foto */
 
     /* --- Tipografía --- */
-    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --font-sans: "Google Sans Flex", "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
     --weight-regular: 400;
     --weight-medium: 500;
     --weight-semibold: 600;
@@ -48,6 +89,7 @@
     --text-lg: 1.1rem;
     --text-xl: 1.4rem;
     --leading: 1.6;
+    --leading-prose: 1.7; /* texto corrido: más aire entre líneas */
 
     /* --- Escala de espaciado (única para márgenes, rellenos y gaps) --- */
     --space-3xs: 0.2rem;
@@ -65,28 +107,24 @@
     --space-7xl: 4rem;
 
     /* --- Layout --- */
-    --reading-measure: 680px;
+    --reading-measure: 660px;  /* 74 caracteres por línea: antes 680px */
+    --prose-measure: 64ch;     /* columna de lectura de los artículos */
     --gutter: 1.5rem;
     --radius-sm: 4px;
 
     /* --- Movimiento --- */
     --transition-border: border-color 0.2s ease-in-out;
     --transition-color: color 0.2s ease-in-out;
+    --transition-knob: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
-/* Modo oscuro automático: se redefinen únicamente los colores. */
-@media (prefers-color-scheme: dark) {
-    :root {
-        color-scheme: dark;
+/* El interruptor fija el tema; si no hay elección guardada, manda el sistema. */
+:root[data-theme="light"] {
+    color-scheme: light;
+}
 
-        --color-bg: #111111;
-        --color-text: #eeeeee;      /* 16.3:1 */
-        --color-muted: #999999;     /* 6.6:1 */
-        --color-link: #ffffff;      /* 18.9:1 */
-        --color-border: #333333;
-        --color-underline: #666666; /* 3.3:1 */
-        --color-code-bg: #1a1a1a;
-    }
+:root[data-theme="dark"] {
+    color-scheme: dark;
 }
 
 /* =============================================================================
@@ -132,9 +170,15 @@ body {
     font-size: 1rem;
     font-weight: var(--weight-regular);
     line-height: var(--leading);
+    font-optical-sizing: auto; /* usa el eje opsz de Google Sans Flex */
     color: var(--color-text);
     background-color: var(--color-bg);
     -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+    color: var(--color-text);
+    background-color: var(--color-surface);
 }
 
 a {
@@ -158,16 +202,23 @@ h2,
 h3 {
     font-weight: var(--weight-semibold);
     margin: 0 0 var(--space-lg);
+    text-wrap: balance; /* evita títulos con una palabra huérfana al final */
 }
 
-/* Ritmo vertical de los bloques de prosa: nunca se aplica a nivel global. */
+/* Bloque de prosa: ritmo de lectura más pausado que el de la interfaz. */
+.prose {
+    font-size: var(--text-md);
+    line-height: var(--leading-prose);
+}
+
 .prose p {
-    margin: 0 0 var(--space-xl);
+    margin: 0 0 var(--space-2xl);
+    text-wrap: pretty; /* equilibra las últimas líneas de cada párrafo */
 }
 
 .prose h2 {
     font-size: var(--text-lg);
-    margin-top: var(--space-3xl);
+    margin-top: var(--space-4xl);
     margin-bottom: var(--space-lg);
 }
 
@@ -178,7 +229,7 @@ code {
 pre {
     margin: 0 0 var(--space-xl);
     padding: var(--space-lg);
-    background: var(--color-code-bg);
+    background: var(--color-surface);
     border-radius: var(--radius-sm);
     overflow-x: auto;
     font-size: var(--text-sm);
@@ -227,6 +278,63 @@ pre {
     color: var(--color-text);
 }
 
+/* Menú e interruptor comparten la misma banda a la derecha. */
+.site-header__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-xl);
+}
+
+.theme-switch {
+    display: none; /* sin JavaScript no hay nada que cambiar: no se muestra */
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: 0;
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: var(--transition-color);
+}
+
+/* Con JavaScript disponible el interruptor aparece, y lo hace antes del primer
+   pintado porque el script es bloqueante en <head>. */
+.js .theme-switch {
+    display: inline-flex;
+}
+
+.theme-switch:hover {
+    color: var(--color-text);
+}
+
+/* El carril sí lleva línea: identifica un control (3:1 o más). */
+.theme-switch__track {
+    display: block;
+    width: 2rem;
+    height: 1.125rem;
+    border: 1px solid var(--color-underline);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+}
+
+.theme-switch__knob {
+    display: block;
+    width: 0.75rem;
+    height: 0.75rem;
+    margin: 0.125rem;
+    border-radius: 50%;
+    background: var(--color-muted);
+    transition: var(--transition-knob);
+}
+
+.theme-switch[aria-checked="true"] .theme-switch__knob {
+    transform: translateX(0.875rem);
+    background: var(--color-text);
+}
+
 /* --- 4.2 Encabezados de página y texto de apoyo --- */
 
 .page-title {
@@ -261,11 +369,6 @@ pre {
     justify-content: space-between;
     align-items: flex-start;
     padding: var(--space-lg) 0;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.entry:last-child {
-    border-bottom: none;
 }
 
 .entry__body {
@@ -350,12 +453,6 @@ pre {
 
 .project {
     margin-bottom: var(--space-4xl);
-    padding-bottom: var(--space-4xl);
-    border-bottom: 1px solid var(--color-border);
-}
-
-.project:last-child {
-    border-bottom: none;
 }
 
 .project__header {
@@ -389,6 +486,11 @@ pre {
 
 /* --- 4.6 Artículos --- */
 
+/* Columna de lectura: 64ch deja el texto en 60-75 caracteres por línea. */
+.article__body {
+    max-width: var(--prose-measure);
+}
+
 .article__meta {
     margin: 0 0 var(--space-4xl);
     font-size: var(--text-base);
@@ -417,12 +519,12 @@ pre {
     margin: 0;
 }
 
-/* Hueco de la serie: si se sustituye por una <img>, conserva proporción y borde. */
+/* Hueco de la serie: sin línea decorativa, solo superficie. Si se sustituye por
+   una <img>, conserva la proporción 4:3 y el resto del estilo ya no hace falta. */
 .photo__frame {
     display: block;
     aspect-ratio: 4 / 3;
-    background-color: var(--color-code-bg);
-    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
     border-radius: var(--radius-sm);
 }
 
@@ -449,8 +551,7 @@ pre {
     flex-wrap: wrap;
     gap: var(--space-2xl);
     margin-top: var(--space-7xl);
-    padding-top: var(--space-3xl);
-    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4xl);
     font-size: var(--text-base);
 }
 

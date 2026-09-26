@@ -8,17 +8,24 @@
     <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
     <link rel="stylesheet" href="assets/css/main.css">
+    <script src="assets/js/theme.js"></script>
 </head>
 <body>
 
     <header class="site-header">
         <div class="site-title"><a href="index.html">Amauris Willmore</a></div>
-        <nav class="site-nav" aria-label="Navegación principal">
-            <a href="index.html">inicio</a>
-            <a href="proyectos.html">proyectos</a>
-            <a href="blog.html" aria-current="page">blog</a>
-            <a href="contact.html">contact</a>
-        </nav>
+        <div class="site-header__actions">
+            <nav class="site-nav" aria-label="Navegación principal">
+                <a href="index.html">inicio</a>
+                <a href="proyectos.html">proyectos</a>
+                <a href="blog.html" aria-current="page">blog</a>
+                <a href="contact.html">contact</a>
+            </nav>
+            <button class="theme-switch" type="button" role="switch" aria-checked="false" data-theme-switch>
+                <span class="theme-switch__track" aria-hidden="true"><span class="theme-switch__knob"></span></span>
+                <span class="theme-switch__label">Tema oscuro</span>
+            </button>
+        </div>
     </header>
 
     <main>
@@ -35,7 +42,7 @@
                 <h2>Renderizado UI con JUCE y Direct2D</h2>
                 <p>El framework JUCE proporciona una abstracción robusta, pero el rendimiento visual exige más cuando tienes cientos de formas de onda actualizándose a 60fps. Implementé el renderizado apoyándome en Direct2D. El uso del patrón MVVM permite que la lógica del modelo (el audio real) se actualice de forma asíncrona respecto a la vista (Session View), lo que es vital para la estabilidad al cargar plugins pesados VST3 y AU.</p>
 
-                <a class="article__back" href="blog.html">← Volver al blog</a>
+                <a class="article__back" href="blog.html">« Volver al blog</a>
             </div>
         </article>
     </main>
@@ -48,7 +55,7 @@
         <a href="https://youtube.com/@amaurisfolio" target="_blank" rel="noopener noreferrer">youtube</a>
         <a href="uses.html">uses</a>
         <a href="photos.html">photos</a>
-        <p class="site-footer__note">Hecho a mano: HTML y CSS, sin dependencias ni JavaScript.</p>
+        <p class="site-footer__note">Hecho a mano: HTML, CSS y JS propio, sin dependencias externas.</p>
     </footer>
 
 </body>

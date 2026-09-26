@@ -8,17 +8,24 @@
     <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
     <link rel="stylesheet" href="assets/css/main.css">
+    <script src="assets/js/theme.js"></script>
 </head>
 <body>
 
     <header class="site-header">
         <div class="site-title"><a href="index.html">Amauris Willmore</a></div>
-        <nav class="site-nav" aria-label="Navegación principal">
-            <a href="index.html" aria-current="page">inicio</a>
-            <a href="proyectos.html">proyectos</a>
-            <a href="blog.html">blog</a>
-            <a href="contact.html">contact</a>
-        </nav>
+        <div class="site-header__actions">
+            <nav class="site-nav" aria-label="Navegación principal">
+                <a href="index.html" aria-current="page">inicio</a>
+                <a href="proyectos.html">proyectos</a>
+                <a href="blog.html">blog</a>
+                <a href="contact.html">contact</a>
+            </nav>
+            <button class="theme-switch" type="button" role="switch" aria-checked="false" data-theme-switch>
+                <span class="theme-switch__track" aria-hidden="true"><span class="theme-switch__knob"></span></span>
+                <span class="theme-switch__label">Tema oscuro</span>
+            </button>
+        </div>
     </header>
 
     <main>
@@ -29,7 +36,7 @@
 
             <p>Construyo puentes entre la lógica técnica y la psicología humana. Mi trabajo abarca desde el <strong>Desarrollo de Software (C++, React, Node.js)</strong>, pasando por la arquitectura UI/UX para el sector público, hasta la producción audiovisual utilizando <strong>Unreal Engine y Motion Graphics</strong>.</p>
 
-            <p><a href="contact.html">Hablemos de tu proyecto →</a></p>
+            <p><a href="contact.html">Hablemos de tu proyecto »</a></p>
         </section>
 
         <section class="experience">
@@ -81,7 +88,7 @@
                 </li>
             </ul>
 
-            <p class="section-more"><a href="proyectos.html">Ver los 6 proyectos →</a></p>
+            <p class="section-more"><a href="proyectos.html">Ver los 6 proyectos »</a></p>
         </section>
 
         <section class="writing">
@@ -102,7 +109,7 @@
                 </li>
             </ul>
 
-            <p class="section-more"><a href="blog.html">Ver los 6 artículos →</a></p>
+            <p class="section-more"><a href="blog.html">Ver los 6 artículos »</a></p>
         </section>
 
         <section class="education">
@@ -146,7 +153,7 @@
         <a href="https://youtube.com/@amaurisfolio" target="_blank" rel="noopener noreferrer">youtube</a>
         <a href="uses.html">uses</a>
         <a href="photos.html">photos</a>
-        <p class="site-footer__note">Hecho a mano: HTML y CSS, sin dependencias ni JavaScript.</p>
+        <p class="site-footer__note">Hecho a mano: HTML, CSS y JS propio, sin dependencias externas.</p>
     </footer>
 
 </body>

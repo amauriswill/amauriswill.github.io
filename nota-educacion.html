@@ -8,17 +8,24 @@
     <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
     <link rel="stylesheet" href="assets/css/main.css">
+    <script src="assets/js/theme.js"></script>
 </head>
 <body>
 
     <header class="site-header">
         <div class="site-title"><a href="index.html">Amauris Willmore</a></div>
-        <nav class="site-nav" aria-label="Navegación principal">
-            <a href="index.html">inicio</a>
-            <a href="proyectos.html">proyectos</a>
-            <a href="blog.html" aria-current="page">blog</a>
-            <a href="contact.html">contact</a>
-        </nav>
+        <div class="site-header__actions">
+            <nav class="site-nav" aria-label="Navegación principal">
+                <a href="index.html">inicio</a>
+                <a href="proyectos.html">proyectos</a>
+                <a href="blog.html" aria-current="page">blog</a>
+                <a href="contact.html">contact</a>
+            </nav>
+            <button class="theme-switch" type="button" role="switch" aria-checked="false" data-theme-switch>
+                <span class="theme-switch__track" aria-hidden="true"><span class="theme-switch__knob"></span></span>
+                <span class="theme-switch__label">Tema oscuro</span>
+            </button>
+        </div>
     </header>
 
     <main>
@@ -35,7 +42,7 @@
                 <h2>El contraste con Finlandia</h2>
                 <p>Para mis investigaciones universitarias, comparé este modelo obsoleto con el sistema educativo de Finlandia. El enfoque finlandés favorece una enorme autonomía del profesorado, una estructura de evaluación personalizada (alejándose de la tiranía de los exámenes estandarizados) y el respeto por los ritmos de desarrollo psicológico individuales de los estudiantes. Es una lección que trasciende la pedagogía y que podemos aplicar incluso en cómo diseñamos productos de software centrados en el usuario.</p>
 
-                <a class="article__back" href="blog.html">← Volver al blog</a>
+                <a class="article__back" href="blog.html">« Volver al blog</a>
             </div>
         </article>
     </main>
@@ -48,7 +55,7 @@
         <a href="https://youtube.com/@amaurisfolio" target="_blank" rel="noopener noreferrer">youtube</a>
         <a href="uses.html">uses</a>
         <a href="photos.html">photos</a>
-        <p class="site-footer__note">Hecho a mano: HTML y CSS, sin dependencias ni JavaScript.</p>
+        <p class="site-footer__note">Hecho a mano: HTML, CSS y JS propio, sin dependencias externas.</p>
     </footer>
 
 </body>

@@ -60,8 +60,9 @@ const SITE_NAME = 'Amauris Willmore';
 
 /** Tokens que la capa de diseño debe exponer siempre. */
 const REQUIRED_TOKENS = [
-    '--color-bg', '--color-text', '--color-muted', '--color-link', '--color-border',
-    '--font-sans', '--font-mono', '--space-lg', '--text-base', '--reading-measure'
+    '--color-bg', '--color-text', '--color-muted', '--color-link', '--color-underline',
+    '--color-surface', '--font-sans', '--font-mono', '--space-lg', '--text-base',
+    '--reading-measure', '--prose-measure'
 ];
 
 const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
@@ -225,20 +226,39 @@ function checkStyleLayer(pages) {
     return failures;
 }
 
-function checkNoScripts(pages) {
+/** Único JavaScript permitido: el interruptor de tema, siempre en un archivo externo. */
+const JS_ENTRY = 'assets/js/theme.js';
+
+function checkScripts(pages) {
     const failures = [];
 
     for (const page of pages.values()) {
         if (page.missing) continue;
-        const source = blankComments(page.html);
+        const { file, tags } = page;
 
-        if (/<script[\s>]/i.test(source)) failures.push(`${page.file}: contiene JavaScript (<script>)`);
+        for (const script of openings(tags, 'script')) {
+            const src = attributeValue(script, 'src');
+            if (!src) {
+                failures.push(`${file}:${script.line}: hay un <script> en línea; el código va en ${JS_ENTRY}`);
+            } else if (src !== JS_ENTRY) {
+                failures.push(`${file}:${script.line}: solo se permite ${JS_ENTRY}, no "${src}"`);
+            }
+        }
 
-        const handler = source.match(/\son[a-z]+\s*=/i);
+        const handler = blankComments(page.html).match(/\son[a-z]+\s*=/i);
         if (handler) {
-            failures.push(`${page.file}: contiene un manejador de eventos en línea (línea ${lineOf(source, handler.index)})`);
+            failures.push(`${file}: contiene un manejador en línea (línea ${lineOf(page.html, handler.index)})`);
         }
     }
+
+    if (!existsSync(join(ROOT, JS_ENTRY))) failures.push(`${JS_ENTRY}: el archivo no existe`);
+
+    /* Mejora progresiva: el interruptor se oculta sin JS y aparece con la clase .js. */
+    const css = readFileSync(join(ROOT, STYLESHEET), 'utf8');
+    if (!/\.js \.theme-switch/.test(css)) {
+        failures.push(`${STYLESHEET}: el interruptor debe mostrarse con .js .theme-switch`);
+    }
+
     return failures;
 }
 
@@ -423,9 +443,30 @@ function checkDesignTokens() {
         if (!new RegExp(`\\n\\s*${token}\\s*:`).test(code)) failures.push(`${STYLESHEET}: falta el token ${token}`);
     }
 
-    const dark = /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{([\s\S]*?)\n\}/.exec(code);
-    if (!dark) failures.push(`${STYLESHEET}: falta el bloque @media (prefers-color-scheme: dark)`);
-    else if (!/--color-bg\s*:/.test(dark[1])) failures.push(`${STYLESHEET}: el modo oscuro no redefine --color-bg`);
+    /* Estructura del tema: una sola declaración por token con light-dark(), y el
+       color-scheme resuelto decide cuál de los dos valores se usa. */
+    if (!/color-scheme:\s*light\s+dark/.test(code)) {
+        failures.push(`${STYLESHEET}: :root debe declarar "color-scheme: light dark"`);
+    }
+    for (const theme of ['light', 'dark']) {
+        if (!code.includes(`:root[data-theme="${theme}"]`)) {
+            failures.push(`${STYLESHEET}: falta el selector :root[data-theme="${theme}"]`);
+        }
+        if (!code.includes(`light-dark(`)) {
+            failures.push(`${STYLESHEET}: los tokens de color deben usar light-dark()`);
+            break;
+        }
+    }
+
+    /* Las tipografías son locales: nada de peticiones a terceros desde el CSS. */
+    for (const match of code.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/g)) {
+        const reference = match[1];
+        if (/^(https?:)?\/\//.test(reference)) {
+            failures.push(`${STYLESHEET}: referencia externa en url(): ${reference}`);
+        } else if (!existsSync(resolve(dirname(path), reference))) {
+            failures.push(`${STYLESHEET}: url() apunta a un archivo inexistente: ${reference}`);
+        }
+    }
 
     if (/!important/.test(code)) failures.push(`${STYLESHEET}: contiene !important`);
     if (/(^|[\s,>])#[a-zA-Z][\w-]*\s*[,{]/.test(code)) failures.push(`${STYLESHEET}: contiene selectores de ID`);
@@ -469,6 +510,13 @@ function contrastRatio(foreground, background) {
     return (lighter + 0.05) / (darker + 0.05);
 }
 
+/** Resuelve un token con light-dark() al color del tema pedido. */
+function themeColor(value, theme) {
+    const pair = /^light-dark\(\s*(#[0-9a-f]{3,8})\s*,\s*(#[0-9a-f]{3,8})\s*\)$/i.exec(value.trim());
+    if (!pair) return value.trim();
+    return theme === 'claro' ? pair[1] : pair[2];
+}
+
 function tokensOf(block) {
     const tokens = new Map();
     for (const match of block.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) {
@@ -482,29 +530,34 @@ function checkThemeContrast() {
     if (!existsSync(path)) return [`${STYLESHEET}: no existe`];
 
     const failures = [];
-    const css = stripCssComments(readFileSync(path, 'utf8'));
-    const lightBlock = /^:root\s*\{([\s\S]*?)\n\}/m.exec(css);
-    const darkBlock = /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{([\s\S]*?)\n\}/.exec(css);
+    const code = stripCssComments(readFileSync(path, 'utf8'));
+    const rootBlock = /^:root\s*\{([\s\S]*?)\n\}/m.exec(code);
 
-    if (!/color-scheme:\s*light/.test(css)) failures.push(`${STYLESHEET}: falta color-scheme: light`);
-    if (!/color-scheme:\s*dark/.test(css)) failures.push(`${STYLESHEET}: falta color-scheme: dark en el bloque oscuro`);
+    if (!/color-scheme:\s*light\s+dark/.test(code)) {
+        failures.push(`${STYLESHEET}: :root debe declarar "color-scheme: light dark"`);
+    }
+    for (const theme of ['light', 'dark']) {
+        if (!code.includes(`:root[data-theme="${theme}"]`)) {
+            failures.push(`${STYLESHEET}: falta el selector :root[data-theme="${theme}"]`);
+        }
+    }
 
-    const themes = [
-        ['claro', tokensOf(lightBlock ? lightBlock[1] : '')],
-        ['oscuro', tokensOf(darkBlock ? darkBlock[1] : '')]
-    ];
+    const tokens = tokensOf(rootBlock ? rootBlock[1] : '');
 
-    for (const [theme, tokens] of themes) {
+    for (const theme of ['claro', 'oscuro']) {
         for (const requirement of CONTRAST_REQUIREMENTS) {
-            const foreground = tokens.get(requirement.fg);
-            const background = tokens.get(requirement.bg);
+            const rawForeground = tokens.get(requirement.fg);
+            const rawBackground = tokens.get(requirement.bg);
 
-            if (!foreground || !background) {
+            if (!rawForeground || !rawBackground) {
                 failures.push(`${STYLESHEET}: tema ${theme}: falta ${requirement.fg} o ${requirement.bg}`);
                 continue;
             }
 
+            const foreground = themeColor(rawForeground, theme);
+            const background = themeColor(rawBackground, theme);
             const ratio = contrastRatio(foreground, background);
+
             if (ratio < requirement.min) {
                 failures.push(`${STYLESHEET}: tema ${theme}: ${requirement.label} ${foreground} sobre `
                     + `${background} = ${ratio.toFixed(2)}:1 (mínimo ${requirement.min}:1)`);
@@ -523,7 +576,7 @@ const CHECKS = [
     ['1. Existencia de las 12 páginas en la raíz', checkPagesExist],
     ['2. Esqueleto del documento (doctype, lang, meta y título)', checkDocumentShell],
     ['3. Capa de estilos externa única (sin CSS embebido ni en línea)', checkStyleLayer],
-    ['4. Cero JavaScript', checkNoScripts],
+    ['4. JavaScript acotado y externo (solo theme.js)', checkScripts],
     ['5. Anidamiento correcto de etiquetas', checkTagNesting],
     ['6. Enlaces internos resueltos (sin placeholders)', checkInternalLinks],
     ['7. Contrato de navegación (orden y aria-current)', checkNavigation],
