@@ -163,7 +163,9 @@ Lo que sí se ha adoptado de su sitio:
   de él), interlineado 1,8, tinta al 80% (`color-mix`), separación de párrafo de 1,35 rem (su
   `1.25em`), títulos en `em`; cita con barra de acento de 2 px; viñetas de lista en acento; código
   en línea como chip con marco; y bloque de código como tarjeta oscura **también en tema claro**.
-- **Contenedor de 42 rem** (su `max-w-2xl`) con relleno vertical de 4 rem.
+- **Los dos contenedores de su sitio**: 36 rem (`max-w-xl`) para los listados y 42 rem
+  (`max-w-2xl`) para los artículos, que necesitan más ancho para la prosa y las imágenes. En ambos,
+  24 px laterales (`px-6`) y 96 px de aire vertical (`py-24`), que bajan a 64 px en móvil (`py-16`).
 - **Barra de progreso de lectura**: línea de acento fija arriba que crece con el scroll.
 - **Listas con línea guía**: título monoespaciado, guion fino hasta el metadato y fecha a la
   derecha, con el título en acento al pasar el ratón. También en móvil desaparece la línea guía.
@@ -183,17 +185,20 @@ Lo que **no** se ha copiado, y por qué:
 
 ## Escala tipográfica
 
-| Elemento | Token | Tamaño | Caracteres por línea (contenedor de 672 px) |
+| Elemento | Token | Tamaño | Caracteres por línea (listados a 576 px) |
 |---|---|---|---|
-| Cuerpo del sitio | `--text-body` | **15 px** | ~90 |
-| Prosa del artículo | `--text-prose` | **17 px** | ~79 |
-| Títulos de listas, navegación y etiquetas | `--text-sm` | **14 px** | ~96 (monoespaciada) |
+| Cuerpo del sitio | `--text-body` | **15 px** | ~77 |
+| Prosa del artículo | `--text-prose` | **17 px** | ~68 (listados) · ~79 (artículos a 672 px) |
+| Títulos de listas, navegación y etiquetas | `--text-sm` | **14 px** | ~69 (monoespaciada) |
 | Fechas, años y metadatos | `--text-2xs` | **12 px** | — |
 | Subtítulo de página | `--text-md` | 16,8 px | — |
 | `h1` del artículo | `--text-2xl` | 30 px | — |
 
 Es un punto más compacta que la de ivan.codes (16 px de cuerpo y 18 px de prosa). El titular del
 artículo se mantiene en 30 px, que es su valor exacto.
+
+Adoptar su ancho de listado corrigió la densidad: antes el cuerpo llegaba a ~90 caracteres por
+línea y las listas a ~96; con 576 px quedan en ~77 y ~69, dentro del rango cómodo de lectura.
 
 ## Tipografías
 

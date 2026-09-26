@@ -83,8 +83,8 @@
        texto >= 7:1 · atenuado y tinta de acento >= 4.5:1 · subrayado >= 3:1 */
     --color-bg: #fafafa;
     --color-bg: light-dark(#fafafa, #0a0a0a);
-    --color-text: #181919;
-    --color-text: light-dark(#181919, #e6e6e3);      /* 16.9:1 claro · 15.8:1 oscuro */
+    --color-text: #171717;
+    --color-text: light-dark(#171717, #e6e6e3);      /* 17.2:1 claro · 15.8:1 oscuro */
     --color-muted: #6b6b66;
     --color-muted: light-dark(#6b6b66, #8a8a85);     /* 5.1:1 · 5.7:1 */
     --color-surface: #f0f0f0;
@@ -136,13 +136,14 @@
     --space-3xl: 2rem;
     --space-4xl: 2.5rem;
     --space-5xl: 3rem;
-    --space-6xl: 3.5rem;
     --space-7xl: 4rem;
 
     /* --- Layout ---
-       Contenedor de 42rem como su max-w-2xl. Su prosa llena todo el ancho
-       disponible, así que el artículo no lleva columna propia. */
-    --reading-measure: 672px;
+       Los dos anchos de su sitio: 36rem (su max-w-xl) para los listados y
+       42rem (su max-w-2xl) para los artículos, que necesitan más ancho. */
+    --reading-measure: 576px;
+    --reading-measure-wide: 672px;
+    --page-pad-y: 6rem; /* su py-24: 96px de aire arriba y abajo */
     --gutter: 1.5rem;
     --radius-sm: 4px;
     --radius-lg: 0.5rem;
@@ -196,7 +197,7 @@ img {
 body {
     max-width: calc(var(--reading-measure) + (2 * var(--gutter)));
     margin: 0 auto;
-    padding: var(--space-7xl) var(--gutter); /* su py-16 */
+    padding: var(--page-pad-y) var(--gutter); /* su px-6 / py-24 */
 
     font-family: var(--font-sans);
     font-size: var(--text-body);
@@ -212,6 +213,12 @@ body {
 ::selection {
     color: var(--color-text);
     background-color: var(--color-surface);
+}
+
+/* Los artículos miden como su max-w-2xl: la prosa y las imágenes necesitan más
+   ancho que un listado. */
+.page-wide {
+    max-width: calc(var(--reading-measure-wide) + (2 * var(--gutter)));
 }
 
 /* El enlace no tiene línea en reposo: la dibuja una barra del acento que entra
@@ -818,7 +825,7 @@ pre code {
 
 @media (max-width: 550px) {
     body {
-        padding: var(--space-6xl) var(--gutter);
+        padding: var(--space-7xl) var(--gutter); /* su py-16 en móvil */
     }
 
     .entry {
