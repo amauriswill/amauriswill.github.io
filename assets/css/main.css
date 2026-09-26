@@ -105,12 +105,27 @@
     --radius-lg: 0.5rem;
 --space-prose: 1.35rem;
 
-    --transition-color: color 0.2s ease-in-out;
-    --transition-knob: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    --transition-color: color 161ms ease-in-out;
+    --transition-knob: transform 161ms ease-in-out, background-color 161ms ease-in-out;
 }
 
 :root[data-theme="dark"] {
     color-scheme: dark;
+}
+
+@keyframes fade-in-down {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.is-single-screen main {
+    animation: fade-in-down 161ms ease-in-out both;
 }
 
 
@@ -148,7 +163,7 @@ padding: var(--page-pad-y) var(--gutter);
     line-height: var(--leading);
     color: var(--color-text);
     background-color: var(--color-bg);
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    transition: background-color 161ms ease-in-out, color 161ms ease-in-out;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -185,6 +200,10 @@ a:hover {
 @media (prefers-reduced-motion: reduce) {
     a {
         transition: none;
+    }
+
+    .is-single-screen main {
+        animation: none;
     }
 }
 
