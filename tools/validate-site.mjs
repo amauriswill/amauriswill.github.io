@@ -49,9 +49,7 @@ const FOOTER_LINKS = [
 const CONTRAST_REQUIREMENTS = [
     { label: 'texto', fg: '--color-text', bg: '--color-bg', min: 7 },
     { label: 'texto atenuado', fg: '--color-muted', bg: '--color-bg', min: 4.5 },
-    { label: 'enlace', fg: '--color-link', bg: '--color-bg', min: 4.5 },
-    { label: 'subrayado del enlace', fg: '--color-underline', bg: '--color-bg', min: 3 },
-    { label: 'coral de acento (tinta)', fg: '--color-accent-ink', bg: '--color-bg', min: 4.5 }
+    { label: 'acento', fg: '--color-accent', bg: '--color-bg', min: 4.5 }
 ];
 
 const STYLESHEET = 'assets/css/main.css';
@@ -61,9 +59,9 @@ const SITE_NAME = 'Amauris Willmore';
 
 /** Tokens que la capa de diseño debe exponer siempre. */
 const REQUIRED_TOKENS = [
-    '--color-bg', '--color-text', '--color-muted', '--color-link', '--color-underline',
-    '--color-surface', '--color-accent', '--color-accent-ink', '--font-sans', '--font-mono',
-    '--space-lg', '--text-base', '--reading-measure', '--prose-measure'
+    '--color-bg', '--color-text', '--color-muted', '--color-surface', '--color-accent',
+    '--font-sans', '--font-mono', '--space-lg', '--text-base', '--reading-measure',
+    '--prose-measure'
 ];
 
 const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
@@ -473,6 +471,15 @@ function checkDesignTokens() {
     }
     if (!code.includes('light-dark(')) {
         failures.push(`${STYLESHEET}: los tokens de color deben usar light-dark()`);
+    }
+
+    /* La línea de los enlaces entra desde la derecha y dura 150ms: es el requisito
+       de interacción del proyecto, no un detalle de estilo. */
+    if (!/background-position:\s*right/.test(code)) {
+        failures.push(`${STYLESHEET}: la línea de los enlaces debe entrar desde la derecha`);
+    }
+    if (!/background-size 150ms/.test(code)) {
+        failures.push(`${STYLESHEET}: la animación de la línea debe durar 150ms`);
     }
 
     /* Las tipografías son locales: nada de peticiones a terceros desde el CSS. */

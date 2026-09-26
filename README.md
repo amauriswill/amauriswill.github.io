@@ -63,12 +63,11 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
    `photos` son secundarias y viven en el pie, para no dispersar a quien viene a evaluar trabajo.
 8. Enlaces externos siempre con `target="_blank"` + `rel="noopener noreferrer"`.
 9. UTF-8 sin BOM en todos los archivos.
-10. Cada tema cumple contraste mínimo sobre el fondo: texto 7:1; texto atenuado, enlace y coral de
-    texto 4.5:1; subrayado 3:1. El test calcula los ratios y falla si alguno baja del mínimo. El
-    `--color-accent` exacto queda exento a propósito: da 2.98:1 y solo se usa como adorno.
-11. **Sin bordes decorativos**: el texto se separa con espacio. La única línea que se dibuja es el
-    subrayado de los enlaces, con `--color-underline`, porque su color es casi igual al del texto y
-    sin él no se sabría qué es un enlace.
+10. Cada tema cumple contraste mínimo sobre el fondo: texto 7:1; texto atenuado y acento 4.5:1.
+    El test calcula los ratios y falla si alguno baja del mínimo.
+11. **Sin bordes decorativos**: el texto se separa con espacio. Los enlaces no llevan línea en
+    reposo; la que aparece al pasar el ratón entra de derecha a izquierda en 150 ms, y el test lo
+    verifica.
 12. Cada token de color se declara **una sola vez** con `light-dark(claro, oscuro)`; el tema
     activo lo decide `color-scheme`, que vale `light` por defecto y el interruptor cambia a `dark`
     con `:root[data-theme="dark"]`.
@@ -124,17 +123,37 @@ memoria — y aplicado sobre nuestras secciones, nuestras tipografías y nuestro
 | `--color-bg` | `#fafafa` | `#0a0a0a` | — |
 | `--color-text` | `#181919` | `#e6e6e3` | 7:1 → 16.9 / 15.8 |
 | `--color-muted` | `#6b6b66` | `#8a8a85` | 4.5:1 → 5.1 / 5.7 |
-| `--color-underline` | `#8a8a85` | `#6b6b66` | 3:1 → 3.3 / 3.7 |
 | `--color-surface` | `#f0f0f0` | `#171717` | decorativo |
-| `--color-accent` | `#ff584d` | `#ff584d` | adorno: 2.98:1 en claro |
-| `--color-accent-ink` | `#b8322b` | `#ff584d` | 4.5:1 → 5.7 / 6.4 |
+| `--color-accent` | `#7c700f` | `#f7df1e` | 4.5:1 → 4.8 / 14.6 |
+
+### El acento, derivado de `#f7df1e`
+
+Un solo token, dos valores. El amarillo de partida es `#f7df1e`:
+
+- **Sobre fondo oscuro** se usa tal cual: da **14.6:1**, Spectacular.
+- **Sobre fondo claro** da **1.3:1**, inservible incluso para texto grande. Por eso ahí se usa
+  el **mismo tono al 50%** (`#7c700f`): mismo hue —53,4° verificado—, solo menos luminosidad, y
+  sube a **4.8:1**, que ya cumple AA para texto normal.
+
+Así hay un único acento para los dos temas, derivado del hex que indicaste, y siempre legible.
+
+### Enlaces: la línea que entra desde la derecha
+
+- En reposo no hay ninguna línea: el enlace se reconoce por su color de acento.
+- Al pasar el ratón, una barra de 1 px del mismo acento **barre de derecha a izquierda** en
+  **150 ms** (`background-position: right` + `background-size` de 0% a 100%).
+- Menú, pie, marca del sitio y el enlace "volver" quedan excluidos: son controles de interfaz,
+  no texto en línea.
+- Con `prefers-reduced-motion: reduce` la línea aparece de golpe, pero se sigue viendo.
+- El test comprueba las dos condiciones del requisito: que entre desde la derecha y que dure 150ms.
 
 Lo que sí se ha adoptado de su sitio:
 
 - **Etiquetas de sección** en versalitas muy espaciadas (`letter-spacing: 0.18em`, 0.75 rem,
   monoespaciada) con una marca cuadrada coral delante.
 - **Cambio de tema animado** en `body`: 0,3 s de transición de fondo y tinta.
-- **El coral como único acento**: la página activa del menú y el hover de los enlaces.
+- **El acento `#f7df1e`** marca la página activa del menú, los enlaces y el guion de las etiquetas
+  de sección; con su variante oscura derivada para que se pueda leer en tema claro.
 - **El cuerpo sigue en 16 px**, aunque su escala baja a 14-15 px: se lee más cómodo.
 
 Lo que **no** se ha copiado, y por qué:
