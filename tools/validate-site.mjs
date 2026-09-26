@@ -15,13 +15,13 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** Contrato: archivo  ->  enlace de navegación que debe marcarse como activo. */
+/** Contrato: archivo -> enlace de navegación activo (null = la página no va en el menú). */
 const PAGES = {
     'index.html': 'index.html',
     'proyectos.html': 'proyectos.html',
     'blog.html': 'blog.html',
-    'uses.html': 'uses.html',
-    'photos.html': 'photos.html',
+    'uses.html': null,
+    'photos.html': null,
     'contact.html': 'contact.html',
     'nota-cpp.html': 'blog.html',
     'nota-ia.html': 'blog.html',
@@ -31,14 +31,26 @@ const PAGES = {
     'nota-psicologia.html': 'blog.html'
 };
 
-const NAV_ORDER = ['index.html', 'proyectos.html', 'blog.html', 'uses.html', 'photos.html', 'contact.html'];
+/** Menú principal: solo lo que un reclutador necesita (el resto vive en el pie). */
+const NAV_ORDER = ['index.html', 'proyectos.html', 'blog.html', 'contact.html'];
 
+/** Enlaces del pie: perfiles y, después, las secciones secundarias. */
 const FOOTER_LINKS = [
     'mailto:amauriswillwork@gmail.com',
     'https://github.com/amauriswill',
     'https://www.linkedin.com/in/amauriswill/',
     'https://behance.net/amauriswill',
-    'https://youtube.com/@amaurisfolio'
+    'https://youtube.com/@amaurisfolio',
+    'uses.html',
+    'photos.html'
+];
+
+/** Contraste mínimo exigido por WCAG sobre el fondo, en ambos temas. */
+const CONTRAST_REQUIREMENTS = [
+    { label: 'texto', fg: '--color-text', bg: '--color-bg', min: 7 },
+    { label: 'texto atenuado', fg: '--color-muted', bg: '--color-bg', min: 4.5 },
+    { label: 'enlace', fg: '--color-link', bg: '--color-bg', min: 4.5 },
+    { label: 'subrayado del enlace', fg: '--color-underline', bg: '--color-bg', min: 3 }
 ];
 
 const STYLESHEET = 'assets/css/main.css';
@@ -315,6 +327,12 @@ function checkNavigation(pages) {
         }
 
         const active = anchors.filter((anchor) => hasAttribute(anchor, 'aria-current'));
+        if (expectedActive === null) {
+            if (active.length > 0) {
+                failures.push(`${file}: la página no está en el menú, así que ningún enlace debe llevar aria-current`);
+            }
+            continue;
+        }
         if (active.length !== 1) {
             failures.push(`${file}: se esperaba un único enlace con aria-current y hay ${active.length}`);
         } else {
@@ -430,6 +448,74 @@ function checkDesignTokens() {
 }
 
 /* =============================================================================
+ * Contraste de color
+ * ========================================================================== */
+
+function relativeLuminance(hex) {
+    const value = hex.trim().replace('#', '');
+    const channels = [0, 2, 4]
+        .map((index) => parseInt(value.slice(index, index + 2), 16) / 255)
+        .map((channel) => (channel <= 0.03928
+            ? channel / 12.92
+            : ((channel + 0.055) / 1.055) ** 2.4));
+
+    return (0.2126 * channels[0]) + (0.7152 * channels[1]) + (0.0722 * channels[2]);
+}
+
+function contrastRatio(foreground, background) {
+    const [lighter, darker] = [relativeLuminance(foreground), relativeLuminance(background)]
+        .sort((a, b) => b - a);
+
+    return (lighter + 0.05) / (darker + 0.05);
+}
+
+function tokensOf(block) {
+    const tokens = new Map();
+    for (const match of block.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) {
+        tokens.set(match[1], match[2].trim());
+    }
+    return tokens;
+}
+
+function checkThemeContrast() {
+    const path = join(ROOT, STYLESHEET);
+    if (!existsSync(path)) return [`${STYLESHEET}: no existe`];
+
+    const failures = [];
+    const css = stripCssComments(readFileSync(path, 'utf8'));
+    const lightBlock = /^:root\s*\{([\s\S]*?)\n\}/m.exec(css);
+    const darkBlock = /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{([\s\S]*?)\n\}/.exec(css);
+
+    if (!/color-scheme:\s*light/.test(css)) failures.push(`${STYLESHEET}: falta color-scheme: light`);
+    if (!/color-scheme:\s*dark/.test(css)) failures.push(`${STYLESHEET}: falta color-scheme: dark en el bloque oscuro`);
+
+    const themes = [
+        ['claro', tokensOf(lightBlock ? lightBlock[1] : '')],
+        ['oscuro', tokensOf(darkBlock ? darkBlock[1] : '')]
+    ];
+
+    for (const [theme, tokens] of themes) {
+        for (const requirement of CONTRAST_REQUIREMENTS) {
+            const foreground = tokens.get(requirement.fg);
+            const background = tokens.get(requirement.bg);
+
+            if (!foreground || !background) {
+                failures.push(`${STYLESHEET}: tema ${theme}: falta ${requirement.fg} o ${requirement.bg}`);
+                continue;
+            }
+
+            const ratio = contrastRatio(foreground, background);
+            if (ratio < requirement.min) {
+                failures.push(`${STYLESHEET}: tema ${theme}: ${requirement.label} ${foreground} sobre `
+                    + `${background} = ${ratio.toFixed(2)}:1 (mínimo ${requirement.min}:1)`);
+            }
+        }
+    }
+
+    return failures;
+}
+
+/* =============================================================================
  * Ejecución
  * ========================================================================== */
 
@@ -441,9 +527,10 @@ const CHECKS = [
     ['5. Anidamiento correcto de etiquetas', checkTagNesting],
     ['6. Enlaces internos resueltos (sin placeholders)', checkInternalLinks],
     ['7. Contrato de navegación (orden y aria-current)', checkNavigation],
-    ['8. Contrato de pie de página (5 enlaces y rel seguro)', checkFooterContract],
+    ['8. Contrato de pie de página (7 enlaces y rel seguro)', checkFooterContract],
     ['9. Contrato de identidad (nombre del sitio en la cabecera)', checkSiteIdentity],
-    ['10. Tokens de diseño de la hoja única', checkDesignTokens]
+    ['10. Tokens de diseño de la hoja única', checkDesignTokens],
+    ['11. Contraste WCAG de los temas claro y oscuro', checkThemeContrast]
 ];
 
 function main() {

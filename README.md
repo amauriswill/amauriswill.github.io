@@ -32,7 +32,8 @@ columna, tipografía nativa del sistema y modo oscuro automático por CSS.
 | Tokens de diseño | `main.css` §1 | Única fuente de verdad de color, tipografía, espaciado y medida de lectura |
 | Reset mínimo | `main.css` §2 | Normalización local, sin frameworks ni dependencias |
 | Elementos base | `main.css` §3 | Tipografía, enlaces y ritmo vertical de la prosa |
-| Layout y componentes | `main.css` §4 | `.site-header`, `.page-title`, `.section-title`, `.subtitle`, `.entry`, `.project`, `.article`, `.tags` / `.tag`, `.gallery` / `.photo`, `.site-footer` |
+| Layout y componentes | `main.css` §4 | `.site-header`, `.page-title`, `.section-title`, `.subtitle`, `.entry`, `.project`, `.article`, `.tags` / `.tag`, `.gallery` / `.photo`, `.section-more`, `.credentials`, `.site-footer` |
+| Utilidades | `main.css` §5 | `.visually-hidden` (contenido solo para lectores de pantalla y buscadores) |
 | Responsive | `main.css` §5 | Un único breakpoint en 550px |
 | Contenido | los 10 `*.html` | Markup semántico sin presentación ni comportamiento |
 | Contrato verificable | `tools/validate-site.mjs` | Impide que las capas se mezclen o se degraden con el tiempo |
@@ -52,9 +53,12 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 6. El estado de la página activa se expresa con `aria-current="page"` (semántica y
    accesibilidad), no con una clase adjetiva.
 7. Cabecera y pie son **contratos idénticos** en todas las páginas y están verificados por el test.
-   La navegación tiene seis secciones en este orden: inicio, proyectos, blog, uses, photos, contact.
+   La navegación principal tiene cuatro secciones (inicio, proyectos, blog, contact); `uses` y
+   `photos` son secundarias y viven en el pie, para no dispersar a quien viene a evaluar trabajo.
 8. Enlaces externos siempre con `target="_blank"` + `rel="noopener noreferrer"`.
 9. UTF-8 sin BOM en todos los archivos.
+10. Cada tema cumple contraste mínimo sobre el fondo: texto 7:1, texto atenuado y enlace 4.5:1,
+    subrayado 3:1. El test calcula los ratios y falla si alguno baja del mínimo.
 
 ## Validación
 
@@ -66,7 +70,7 @@ Comprueba: existencia de las 12 páginas, UTF-8 sin BOM, esqueleto del documento
 capa de estilos externa, ausencia de JavaScript, anidamiento de etiquetas, enlaces
 internos resueltos, contrato de navegación, contrato de pie de página, contrato de
 identidad (el nombre público del sitio, `Amauris Willmore`, debe ser idéntico en la
-cabecera de todas las páginas) y los tokens de diseño.
+cabecera de todas las páginas), los tokens de diseño y el contraste de ambos temas.
 El proceso devuelve código de salida `1` si alguna comprobación falla.
 
 Para previsualizar en local:
