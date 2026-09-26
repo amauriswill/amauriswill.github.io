@@ -150,16 +150,16 @@
        Todo se mide en vh con clamp(): en un viewport bajo el sitio se comprime
        proporcionalmente en vez de desbordarse. El minimo de cada uno es el valor
        legible con espacio reducido, para que comprimir nunca saque texto. */
-    --screen-pad-y: clamp(0.8rem, 4vh, 2.8rem);
+    --screen-pad-y: clamp(0.75rem, 3.4vh, 2.4rem);
     --screen-header-gap: clamp(1.1rem, 5.5vh, 3.5rem);
-    --screen-lead-gap: clamp(0.9rem, 3.6vh, 2.4rem);
-    --screen-para-gap: clamp(0.45rem, 1.9vh, 1.3rem);
+    --screen-lead-gap: clamp(0.8rem, 2.9vh, 2rem);
+    --screen-para-gap: clamp(0.4rem, 1.55vh, 1.1rem);
     --screen-section-gap: clamp(0.8rem, 3.7vh, 2.5rem);
     --screen-title-gap: clamp(0.35rem, 2.2vh, 1.3rem);
     --screen-footer-gap: clamp(0.7rem, 3.2vh, 2.4rem);
-    --screen-lead: clamp(0.95rem, 1.75vh, 1.15rem);
+    --screen-lead: clamp(0.92rem, 1.55vh, 1.02rem);
     --screen-prose: clamp(0.82rem, 1.45vh, 0.95rem);
-    --screen-row-pad: clamp(0.13rem, 0.66vh, 0.54rem);
+    --screen-row-pad: clamp(0.12rem, 0.56vh, 0.46rem);
     --radius-sm: 4px;
     --radius-lg: 0.5rem;
     --space-prose: 1.35rem; /* separación de párrafo: su 1.25em sobre 17px */
@@ -1084,8 +1084,12 @@ body.is-single-screen .reading-progress {
 
 /* El bloque de prosa se reparte en el hueco sobrante y se recorta por abajo
    solo si de verdad no cabe; en el caso normal conserva sus tres parrafos. */
+/* La prosa comparte medida con la frase de entrada: las dos ocupan el ancho de
+   la columna, sin tope propio, para que sus bordes derechos caigan en la misma
+   vertical. Antes la prosa se cerraba a 32em y el texto se partia antes de
+   tiempo, dejando un escalon a la derecha que se notaba mucho. */
 .is-single-screen .hero .prose {
-    max-width: 32em;
+    max-width: none;
     font-size: var(--screen-prose);
     line-height: var(--leading);
 }
@@ -1097,7 +1101,8 @@ body.is-single-screen .reading-progress {
 /* En una ventana baja la prosa se limita a lo esencial: los dos primeros
    parrafos siguen, el tercero es prescindible porque solo despide. */
 @media (max-height: 700px) {
-    .is-single-screen .hero .prose p:last-child {
+    .is-single-screen .hero .prose p:last-child,
+    .is-single-screen .hero .prose p:nth-last-child(2) {
         display: none;
     }
 
