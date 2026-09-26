@@ -352,6 +352,24 @@ pre code {
     border-bottom: none;
 }
 
+.site-title a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.site-title a::before {
+    content: "";
+    display: inline-block;
+    width: 1.05em;
+    height: 1.05em;
+    background: url("../icons/aw-mask.svg") center / contain no-repeat;
+}
+
+:root[data-theme="dark"] .site-title a::before {
+    filter: invert(1);
+}
+
 .site-nav {
     display: flex;
     flex-wrap: wrap;
