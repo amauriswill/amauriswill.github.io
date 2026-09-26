@@ -1,0 +1,404 @@
+/* =============================================================================
+ * main.css — Hoja de estilos única del portafolio de Amauris Willmore
+ * -----------------------------------------------------------------------------
+ * Arquitectura por capas, de lo abstracto a lo concreto:
+ *   1. Tokens de diseño       -> única fuente de verdad (color, tipografía, escala)
+ *   2. Reset mínimo           -> normalización local, sin dependencias externas
+ *   3. Elementos base         -> tipografía, enlaces y prosa por defecto
+ *   4. Layout y componentes   -> cabecera, entradas, proyectos, artículos y pie
+ *   5. Responsive             -> un único breakpoint (550px)
+ *
+ * Reglas del proyecto:
+ *   - Sin estilos en línea, sin <style> embebido, sin JavaScript, sin !important.
+ *   - Convención de nombres BEM-lite: .bloque, .bloque__elemento, .bloque--variante.
+ *   - Todo valor visual nuevo debe expresarse con un token de la capa 1.
+ * ========================================================================== */
+
+/* =============================================================================
+ * 1. TOKENS DE DISEÑO
+ * ========================================================================== */
+
+:root {
+    /* --- Color (el modo oscuro solo redefine esta sección) --- */
+    --color-bg: #fafafa;
+    --color-text: #111111;
+    --color-muted: #666666;
+    --color-link: #000000;
+    --color-border: #eaeaea;
+    --color-code-bg: #eaeaea;
+
+    /* --- Tipografía --- */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --text-xs: 0.85rem;
+    --text-sm: 0.9rem;
+    --text-base: 0.95rem;
+    --text-md: 1.05rem;
+    --text-lg: 1.1rem;
+    --text-xl: 1.4rem;
+    --leading: 1.6;
+
+    /* --- Escala de espaciado (única para márgenes, rellenos y gaps) --- */
+    --space-3xs: 0.2rem;
+    --space-2xs: 0.3rem;
+    --space-xs: 0.4rem;
+    --space-sm: 0.5rem;
+    --space-md: 0.8rem;
+    --space-lg: 1rem;
+    --space-xl: 1.2rem;
+    --space-2xl: 1.5rem;
+    --space-3xl: 2rem;
+    --space-4xl: 2.5rem;
+    --space-5xl: 3rem;
+    --space-6xl: 3.5rem;
+    --space-7xl: 4rem;
+
+    /* --- Layout --- */
+    --reading-measure: 680px;
+    --gutter: 1.5rem;
+    --radius-sm: 4px;
+
+    /* --- Movimiento --- */
+    --transition-border: border-color 0.2s ease-in-out;
+    --transition-color: color 0.2s ease-in-out;
+}
+
+/* Modo oscuro automático: se redefinen únicamente los colores. */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-bg: #111111;
+        --color-text: #eeeeee;
+        --color-muted: #999999;
+        --color-link: #ffffff;
+        --color-border: #333333;
+        --color-code-bg: #1a1a1a;
+    }
+}
+
+/* =============================================================================
+ * 2. RESET MÍNIMO
+ * ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Las listas de contenido (entry-list, project-list) se presentan como bloques
+   sin viñetas; el resto de listas conserva el comportamiento nativo. */
+ul[class] {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* =============================================================================
+ * 3. ELEMENTOS BASE
+ * ========================================================================== */
+
+/* Layout: contenedor único, de una sola columna y centrado.
+   La medida de lectura se mantiene en 680px de contenido, por eso el ancho
+   máximo suma el relleno lateral (box-sizing: border-box). */
+body {
+    max-width: calc(var(--reading-measure) + (2 * var(--gutter)));
+    margin: 0 auto;
+    padding: var(--space-5xl) var(--gutter);
+
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: var(--leading);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+    transition: var(--transition-border);
+}
+
+a:hover {
+    border-bottom-color: var(--color-text);
+}
+
+a:focus-visible {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+}
+
+h1,
+h2,
+h3 {
+    font-weight: var(--weight-semibold);
+    margin: 0 0 var(--space-lg);
+}
+
+/* Ritmo vertical de los bloques de prosa: nunca se aplica a nivel global. */
+.prose p {
+    margin: 0 0 var(--space-xl);
+}
+
+.prose h2 {
+    font-size: var(--text-lg);
+    margin-top: var(--space-3xl);
+    margin-bottom: var(--space-lg);
+}
+
+code {
+    font-family: var(--font-mono);
+}
+
+pre {
+    margin: 0 0 var(--space-xl);
+    padding: var(--space-lg);
+    background: var(--color-code-bg);
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+    font-size: var(--text-sm);
+}
+
+/* =============================================================================
+ * 4. LAYOUT Y COMPONENTES
+ * ========================================================================== */
+
+/* --- 4.1 Cabecera del sitio (contrato idéntico en las 9 páginas) --- */
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-5xl);
+}
+
+.site-title {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+}
+
+.site-title a {
+    color: var(--color-text);
+    border-bottom: none;
+}
+
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xl);
+}
+
+.site-nav a {
+    color: var(--color-muted);
+    font-size: var(--text-base);
+    border-bottom: none;
+    transition: var(--transition-color);
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+    color: var(--color-text);
+}
+
+/* --- 4.2 Encabezados de página y texto de apoyo --- */
+
+.page-title {
+    margin-top: var(--space-3xl);
+    margin-bottom: var(--space-sm);
+    font-size: var(--text-xl);
+}
+
+.section-title {
+    margin-top: var(--space-6xl);
+    margin-bottom: var(--space-lg);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+}
+
+.subtitle {
+    color: var(--color-muted);
+    font-size: var(--text-md);
+}
+
+.hero .subtitle {
+    margin: 0 0 var(--space-3xl);
+}
+
+.page-intro .subtitle {
+    margin: 0 0 var(--space-5xl);
+}
+
+/* --- 4.3 Entradas (portada y página de notas) --- */
+
+.entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: var(--space-lg) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.entry:last-child {
+    border-bottom: none;
+}
+
+.entry__body {
+    max-width: 80%;
+}
+
+.entry__title {
+    display: block;
+    font-weight: var(--weight-medium);
+}
+
+.entry__desc {
+    margin: var(--space-3xs) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+}
+
+.entry__meta {
+    margin-left: var(--space-lg);
+    font-size: var(--text-xs);
+    text-align: right;
+    white-space: nowrap;
+    color: var(--color-muted);
+}
+
+/* Variante de la página de notas: entradas con descripción y más aire. */
+.entry--detail {
+    padding: var(--space-xl) 0;
+}
+
+.entry--detail .entry__title {
+    margin-bottom: var(--space-2xs);
+    font-size: var(--text-md);
+}
+
+.entry--detail .entry__desc {
+    margin-top: 0;
+    font-size: var(--text-base);
+}
+
+.entry--detail .entry__meta {
+    margin-top: var(--space-3xs);
+}
+
+/* --- 4.4 Proyectos --- */
+
+.project {
+    margin-bottom: var(--space-4xl);
+    padding-bottom: var(--space-4xl);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.project:last-child {
+    border-bottom: none;
+}
+
+.project__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-sm);
+}
+
+.project__title {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+}
+
+.project__meta {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+}
+
+.project__role {
+    margin: 0 0 var(--space-md);
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+}
+
+.project__desc {
+    margin: 0;
+    font-size: var(--text-base);
+    color: var(--color-muted);
+}
+
+/* --- 4.5 Artículos --- */
+
+.article__meta {
+    margin: 0 0 var(--space-4xl);
+    font-size: var(--text-base);
+    color: var(--color-muted);
+}
+
+.article__back {
+    display: inline-block;
+    margin-top: var(--space-3xl);
+    font-weight: var(--weight-medium);
+    border-bottom: none;
+}
+
+/* --- 4.6 Pie de página --- */
+
+.site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xl);
+    margin-top: var(--space-7xl);
+    padding-top: var(--space-3xl);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-base);
+}
+
+.site-footer a {
+    color: var(--color-muted);
+    border-bottom: none;
+    transition: var(--transition-color);
+}
+
+.site-footer a:hover {
+    color: var(--color-text);
+}
+
+/* =============================================================================
+ * 5. RESPONSIVE (un único breakpoint: 550px)
+ * ========================================================================== */
+
+@media (max-width: 550px) {
+    .entry {
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .entry__body {
+        max-width: 100%;
+    }
+
+    .entry__meta {
+        margin-left: 0;
+        text-align: left;
+    }
+
+    .project__header {
+        flex-direction: column;
+        gap: var(--space-3xs);
+    }
+}
+
+
+

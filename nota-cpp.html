@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura de subprocesos y renderizado Direct2D - Amauris Willmore</title>
+    <meta name="description" content="Pools de trabajadores lock-free, diseño MVVM con JUCE y renderizado Direct2D en un motor de audio profesional escrito en C++17.">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="site-title"><a href="index.html">Vincel Amauris Willmore</a></div>
+        <nav class="site-nav" aria-label="Navegación principal">
+            <a href="index.html">inicio</a>
+            <a href="proyectos.html">proyectos</a>
+            <a href="notas.html" aria-current="page">notas</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="article">
+            <h1 class="page-title">Arquitectura de subprocesos y renderizado Direct2D en C++</h1>
+            <p class="article__meta">Septiembre 2026 • Ingeniería de Audio</p>
+
+            <div class="article__body prose">
+                <p>El desarrollo de estaciones de trabajo de audio digital (DAWs) requiere una gestión de memoria y subprocesos extremadamente estricta. Cualquier bloqueo en el hilo de audio resulta en "glitches" o "dropouts" inaceptables.</p>
+
+                <h2>El paradigma Lock-Free</h2>
+                <p>En el núcleo del motor que estoy desarrollando utilizando C++17, implementé una arquitectura multihilo donde el hilo de audio principal está completamente aislado del hilo de la interfaz gráfica (UI). Utilizando <code>std::unique_ptr</code> para la gestión de memoria inteligente y estructuras de datos <em>lock-free</em>, logramos que los workers nunca bloqueen la lectura del búfer de audio.</p>
+
+                <h2>Renderizado UI con JUCE y Direct2D</h2>
+                <p>El framework JUCE proporciona una abstracción robusta, pero el rendimiento visual exige más cuando tienes cientos de formas de onda actualizándose a 60fps. Implementé el renderizado apoyándome en Direct2D. El uso del patrón MVVM permite que la lógica del modelo (el audio real) se actualice de forma asíncrona respecto a la vista (Session View), lo que es vital para la estabilidad al cargar plugins pesados VST3 y AU.</p>
+
+                <a class="article__back" href="notas.html">← Volver a notas</a>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <a href="mailto:amauriswillwork@gmail.com">email</a>
+        <a href="https://github.com/amauriswill" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://www.linkedin.com/in/amauriswill/" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="https://behance.net/amauriswill" target="_blank" rel="noopener noreferrer">behance</a>
+        <a href="https://youtube.com/@amaurisfolio" target="_blank" rel="noopener noreferrer">youtube</a>
+    </footer>
+
+</body>
+</html>

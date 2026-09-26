@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatización con Winget y PowerShell - Amauris Willmore</title>
+    <meta name="description" content="Scripts híbridos en Batch y PowerShell para actualizar Windows con Winget sin romper dependencias críticas como Ableton Live.">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="site-title"><a href="index.html">Vincel Amauris Willmore</a></div>
+        <nav class="site-nav" aria-label="Navegación principal">
+            <a href="index.html">inicio</a>
+            <a href="proyectos.html">proyectos</a>
+            <a href="notas.html" aria-current="page">notas</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="article">
+            <h1 class="page-title">Automatización de entornos: Batch, PowerShell y Winget</h1>
+            <p class="article__meta">Agosto 2026 • DevOps &amp; Scripts</p>
+
+            <div class="article__body prose">
+                <p>Mantener un entorno de desarrollo funcional puede convertirse rápidamente en una tarea tediosa, especialmente cuando dependes de herramientas de software muy específicas que no deben actualizarse accidentalmente y romper compatibilidades.</p>
+
+                <h2>El problema de la actualización masiva</h2>
+                <p>El gestor de paquetes de Windows es útil, pero destructivo si haces un upgrade global. Si estás a mitad de un proyecto musical o de desarrollo, no quieres que Ableton Live o la terminal cambien de versión repentinamente.</p>
+
+                <h2>La solución con Regex</h2>
+                <p>Diseñé un flujo híbrido utilizando scripts <strong>Batch</strong> y <strong>PowerShell</strong>. El script analiza el inventario de software actual, aplica filtros de expresiones regulares (regex) para ignorar coincidencias exactas como "Ableton Live", y luego actualiza sistemáticamente todo lo demás de fondo. Esto me permite mantener el sistema seguro sin comprometer las dependencias críticas de mis DAWs.</p>
+
+                <a class="article__back" href="notas.html">← Volver a notas</a>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <a href="mailto:amauriswillwork@gmail.com">email</a>
+        <a href="https://github.com/amauriswill" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://www.linkedin.com/in/amauriswill/" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="https://behance.net/amauriswill" target="_blank" rel="noopener noreferrer">behance</a>
+        <a href="https://youtube.com/@amaurisfolio" target="_blank" rel="noopener noreferrer">youtube</a>
+    </footer>
+
+</body>
+</html>

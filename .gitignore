@@ -1,0 +1,7 @@
+# Archivos generados por el sistema operativo
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Dependencias (el sitio no tiene, pero se previene su inclusión futura)
+node_modules/
