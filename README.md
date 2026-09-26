@@ -63,13 +63,15 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
    `photos` son secundarias y viven en el pie, para no dispersar a quien viene a evaluar trabajo.
 8. Enlaces externos siempre con `target="_blank"` + `rel="noopener noreferrer"`.
 9. UTF-8 sin BOM en todos los archivos.
-10. Cada tema cumple contraste mínimo sobre el fondo: texto 7:1, texto atenuado y enlace 4.5:1,
-    subrayado 3:1. El test calcula los ratios y falla si alguno baja del mínimo.
+10. Cada tema cumple contraste mínimo sobre el fondo: texto 7:1; texto atenuado, enlace y coral de
+    texto 4.5:1; subrayado 3:1. El test calcula los ratios y falla si alguno baja del mínimo. El
+    `--color-accent` exacto queda exento a propósito: da 2.98:1 y solo se usa como adorno.
 11. **Sin bordes decorativos**: el texto se separa con espacio. La única línea que se dibuja es el
     subrayado de los enlaces, con `--color-underline`, porque su color es casi igual al del texto y
     sin él no se sabría qué es un enlace.
 12. Cada token de color se declara **una sola vez** con `light-dark(claro, oscuro)`; el tema
-    activo lo decide `color-scheme`, que el interruptor fija con `:root[data-theme]`.
+    activo lo decide `color-scheme`, que vale `light` por defecto y el interruptor cambia a `dark`
+    con `:root[data-theme="dark"]`.
 13. Las tipografías son locales: nada de peticiones a Google ni a ningún otro tercero.
 
 ## Validación
@@ -93,10 +95,14 @@ python -m http.server 8000    # luego abrir http://localhost:8000
 
 ## Tema claro y oscuro
 
-- Por defecto manda el sistema (`prefers-color-scheme`), sin JavaScript.
+- **Claro por defecto.** Sin elección guardada el sitio se muestra en claro, aunque el sistema
+  operativo esté en oscuro; el interruptor es la única vía al tema oscuro y su preferencia se
+  guarda en `localStorage` con la clave `theme`. No hay ninguna `@media (prefers-color-scheme)`.
 - El interruptor de la cabecera es **solo icono** (una bombilla): sin texto visible, su nombre
   accesible viene de `aria-label="Tema oscuro"` y el estado de `aria-checked`. El test exige que
   `role="switch"` y ese `aria-label` no falten. El relleno amplía el área sensible a ~28 px.
+- `data-theme` solo se escribe para el tema **oscuro**; sin atributo, `:root` ya es claro, así que
+  no hace falta un selector para volver atrás.
 - `data-theme` solo se escribe en `<html>` cuando la elección **difiere** del sistema; si no, se
   retira y `:root` vuelve a valer `color-scheme: light dark`.
 - Los colores se declaran una sola vez con `light-dark(claro, oscuro)`, así que el tema oscuro no
@@ -107,6 +113,36 @@ python -m http.server 8000    # luego abrir http://localhost:8000
   pintado con `mask`, no un `<img>`: dentro de un `<img>` el `fill="currentColor"` del SVG no ve los
   colores de la página y el icono se quedaría negro en el tema oscuro. Con máscara hereda el color
   del texto, y el archivo se cachea como cualquier otro recurso del sitio.
+
+## Estilo
+
+Sistema visual tomado de ivan.codes — descargué su CSS real para copiar los valores, no de
+memoria — y aplicado sobre nuestras secciones, nuestras tipografías y nuestro propio tema oscuro.
+
+| Token | Claro | Oscuro | Mínimo exigido |
+|---|---|---|---|
+| `--color-bg` | `#fafafa` | `#0a0a0a` | — |
+| `--color-text` | `#181919` | `#e6e6e3` | 7:1 → 16.9 / 15.8 |
+| `--color-muted` | `#6b6b66` | `#8a8a85` | 4.5:1 → 5.1 / 5.7 |
+| `--color-underline` | `#8a8a85` | `#6b6b66` | 3:1 → 3.3 / 3.7 |
+| `--color-surface` | `#f0f0f0` | `#171717` | decorativo |
+| `--color-accent` | `#ff584d` | `#ff584d` | adorno: 2.98:1 en claro |
+| `--color-accent-ink` | `#b8322b` | `#ff584d` | 4.5:1 → 5.7 / 6.4 |
+
+Lo que sí se ha adoptado de su sitio:
+
+- **Etiquetas de sección** en versalitas muy espaciadas (`letter-spacing: 0.18em`, 0.75 rem,
+  monoespaciada) con una marca cuadrada coral delante.
+- **Cambio de tema animado** en `body`: 0,3 s de transición de fondo y tinta.
+- **El coral como único acento**: la página activa del menú y el hover de los enlaces.
+- **El cuerpo sigue en 16 px**, aunque su escala baja a 14-15 px: se lee más cómodo.
+
+Lo que **no** se ha copiado, y por qué:
+
+- Sus hairlines (`--border: #d4d4d4`): aquí la separación es por espacio, sin bordes decorativos.
+- Sus tipografías (Inter + IBM Plex Mono): se mantienen Google Sans Flex y Google Sans Code, que
+  elegiste expresamente, repartidas por rol como se describe más abajo.
+- Su tipografía de 10vw para el display: no hace falta con nuestro contenido.
 
 ## Tipografías
 

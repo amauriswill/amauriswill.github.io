@@ -53,27 +53,34 @@
  * ========================================================================== */
 
 :root {
-    /* Sin data-theme manda la preferencia del sistema. */
-    color-scheme: light dark;
+    /* El sitio nace claro. El interruptor añade data-theme="dark" para el oscuro. */
+    color-scheme: light;
 
     /* --- Color ---
-       Cada token declara los dos temas con light-dark(), así que el oscuro no
-       duplica bloque. La primera línea de cada par es el respaldo para
-       navegadores que ignoran light-dark(); ahí el sitio se queda en claro.
+       Paleta de ivan.codes: fondo crudo, tinta casi negra, grises cálidos, una
+       superficie y un coral de acento. Cada token declara los dos temas con
+       light-dark(), así que el oscuro no duplica bloque. La primera línea de cada
+       par es el respaldo para navegadores que ignoran light-dark().
        Mínimos que tools/validate-site.mjs exige sobre el fondo:
-       texto >= 7:1 · atenuado >= 4.5:1 · enlace >= 4.5:1 · subrayado >= 3:1 */
+       texto >= 7:1 · atenuado y tinta de acento >= 4.5:1 · subrayado >= 3:1 */
     --color-bg: #fafafa;
-    --color-bg: light-dark(#fafafa, #111111);
-    --color-text: #111111;
-    --color-text: light-dark(#111111, #eeeeee);      /* 18.1:1 claro · 16.3:1 oscuro */
-    --color-muted: #5c5c5c;
-    --color-muted: light-dark(#5c5c5c, #999999);     /* 6.4:1 · 6.6:1 */
-    --color-link: #000000;
-    --color-link: light-dark(#000000, #ffffff);      /* 20.1:1 · 18.9:1 */
-    --color-underline: #8c8c8c;
-    --color-underline: light-dark(#8c8c8c, #666666); /* 3.2:1 · 3.3:1 */
-    --color-surface: #eaeaea;
-    --color-surface: light-dark(#eaeaea, #1a1a1a);   /* código y huecos de foto */
+    --color-bg: light-dark(#fafafa, #0a0a0a);
+    --color-text: #181919;
+    --color-text: light-dark(#181919, #e6e6e3);      /* 16.9:1 claro · 15.8:1 oscuro */
+    --color-muted: #6b6b66;
+    --color-muted: light-dark(#6b6b66, #8a8a85);     /* 5.1:1 · 5.7:1 */
+    --color-link: #181919;
+    --color-link: light-dark(#181919, #e6e6e3);
+    --color-underline: #8a8a85;
+    --color-underline: light-dark(#8a8a85, #6b6b66); /* 3.3:1 · 3.7:1 */
+    --color-surface: #f0f0f0;
+    --color-surface: light-dark(#f0f0f0, #171717);   /* código, selección y huecos de foto */
+    /* El coral exacto de ivan.codes da 2.98:1 sobre fondo claro: es adorno, nunca texto. */
+    --color-accent: #ff584d;
+    --color-accent: light-dark(#ff584d, #ff584d);
+    /* Para texto o iconos el mismo coral, oscurecido lo justo en tema claro. */
+    --color-accent-ink: #b8322b;
+    --color-accent-ink: light-dark(#b8322b, #ff584d); /* 5.7:1 · 6.4:1 */
 
     /* --- Tipografía --- */
     --font-sans: "Google Sans Flex", "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -118,11 +125,8 @@
     --transition-knob: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
-/* El interruptor fija el tema; si no hay elección guardada, manda el sistema. */
-:root[data-theme="light"] {
-    color-scheme: light;
-}
-
+/* El sitio es claro por defecto. El interruptor añade data-theme="dark" para
+   pasar al oscuro; no hace falta un atributo para volver a claro. */
 :root[data-theme="dark"] {
     color-scheme: dark;
 }
@@ -173,6 +177,8 @@ body {
     font-optical-sizing: auto; /* usa el eje opsz de Google Sans Flex */
     color: var(--color-text);
     background-color: var(--color-bg);
+    /* El cambio de tema se ve suave, como en ivan.codes. */
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -190,6 +196,7 @@ a {
 
 a:hover {
     border-bottom-color: var(--color-text);
+    color: var(--color-accent-ink);
 }
 
 /* El foco también debe verse en el botón, no solo en los enlaces. */
@@ -289,6 +296,11 @@ pre {
     color: var(--color-text);
 }
 
+/* La página activa se marca con el coral: es la única señal de color del sitio. */
+.site-nav a[aria-current="page"] {
+    color: var(--color-accent-ink);
+}
+
 /* Menú e interruptor comparten la misma banda a la derecha. */
 .site-header__actions {
     display: flex;
@@ -344,14 +356,26 @@ pre {
     font-size: var(--text-xl);
 }
 
+/* Etiqueta de sección: versalitas muy espaciadas, el patrón de ivan.codes. El
+   cuadrado coral es adorno puro, porque el coral no llega a 3:1 sobre el fondo. */
 .section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
     margin-top: var(--space-6xl);
     margin-bottom: var(--space-lg);
-    font-size: var(--text-lg);
+    font-size: var(--text-2xs);
     font-weight: var(--weight-semibold);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--color-muted);
+}
+
+.section-title::before {
+    content: "";
+    width: var(--space-md);
+    height: var(--space-md);
+    background-color: var(--color-accent);
 }
 
 .subtitle {
@@ -472,6 +496,13 @@ pre {
    sección; la descripción y las etiquetas se quedan en Google Sans Flex. */
 .project__title,
 .project__role {
+    font-family: var(--font-mono);
+}
+
+/* Metadatos (fechas y años) en Google Sans Code, como los datos de ivan.codes. */
+.article__meta,
+.project__meta,
+.entry__meta {
     font-family: var(--font-mono);
 }
 

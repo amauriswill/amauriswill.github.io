@@ -9,8 +9,8 @@
     'use strict';
 
     const STORAGE_KEY = 'theme';
+    const DEFAULT_THEME = 'light'; // el sitio nace claro, sin mirar el sistema
     const root = document.documentElement;
-    const system = window.matchMedia('(prefers-color-scheme: dark)');
 
     const switches = function () {
         return document.querySelectorAll('[data-theme-switch]');
@@ -34,19 +34,14 @@
 
     const currentTheme = function () {
         const choice = readChoice();
-        if (choice === 'dark' || choice === 'light') {
-            return choice;
-        }
-        return system.matches ? 'dark' : 'light';
+        return (choice === 'dark' || choice === 'light') ? choice : DEFAULT_THEME;
     };
 
     const apply = function () {
         const theme = currentTheme();
-        const systemTheme = system.matches ? 'dark' : 'light';
 
-        // data-theme solo se escribe cuando difiere del sistema: así, si el
-        // visitante nunca elige, :root vuelve a valer "light dark" y manda el SO.
-        if (theme === systemTheme) {
+        // Sin atributo, :root ya es claro: el atributo solo hace falta para el oscuro.
+        if (theme === DEFAULT_THEME) {
             root.removeAttribute('data-theme');
         } else {
             root.setAttribute('data-theme', theme);
@@ -72,5 +67,4 @@
     apply(); // antes de pintar el cuerpo: el script es bloqueante en <head>
     document.addEventListener('DOMContentLoaded', apply);
     document.addEventListener('click', toggle);
-    system.addEventListener('change', apply);
 })();

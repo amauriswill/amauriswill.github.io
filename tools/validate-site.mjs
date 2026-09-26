@@ -50,7 +50,8 @@ const CONTRAST_REQUIREMENTS = [
     { label: 'texto', fg: '--color-text', bg: '--color-bg', min: 7 },
     { label: 'texto atenuado', fg: '--color-muted', bg: '--color-bg', min: 4.5 },
     { label: 'enlace', fg: '--color-link', bg: '--color-bg', min: 4.5 },
-    { label: 'subrayado del enlace', fg: '--color-underline', bg: '--color-bg', min: 3 }
+    { label: 'subrayado del enlace', fg: '--color-underline', bg: '--color-bg', min: 3 },
+    { label: 'coral de acento (tinta)', fg: '--color-accent-ink', bg: '--color-bg', min: 4.5 }
 ];
 
 const STYLESHEET = 'assets/css/main.css';
@@ -61,8 +62,8 @@ const SITE_NAME = 'Amauris Willmore';
 /** Tokens que la capa de diseño debe exponer siempre. */
 const REQUIRED_TOKENS = [
     '--color-bg', '--color-text', '--color-muted', '--color-link', '--color-underline',
-    '--color-surface', '--font-sans', '--font-mono', '--space-lg', '--text-base',
-    '--reading-measure', '--prose-measure'
+    '--color-surface', '--color-accent', '--color-accent-ink', '--font-sans', '--font-mono',
+    '--space-lg', '--text-base', '--reading-measure', '--prose-measure'
 ];
 
 const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
@@ -460,19 +461,18 @@ function checkDesignTokens() {
         if (!new RegExp(`\\n\\s*${token}\\s*:`).test(code)) failures.push(`${STYLESHEET}: falta el token ${token}`);
     }
 
-    /* Estructura del tema: una sola declaración por token con light-dark(), y el
-       color-scheme resuelto decide cuál de los dos valores se usa. */
-    if (!/color-scheme:\s*light\s+dark/.test(code)) {
-        failures.push(`${STYLESHEET}: :root debe declarar "color-scheme: light dark"`);
+    /* Estructura del tema: claro por defecto y un único atributo para el oscuro. */
+    if (!/color-scheme:\s*light\s*;/.test(code)) {
+        failures.push(`${STYLESHEET}: :root debe declarar "color-scheme: light" (tema claro por defecto)`);
     }
-    for (const theme of ['light', 'dark']) {
-        if (!code.includes(`:root[data-theme="${theme}"]`)) {
-            failures.push(`${STYLESHEET}: falta el selector :root[data-theme="${theme}"]`);
-        }
-        if (!code.includes(`light-dark(`)) {
-            failures.push(`${STYLESHEET}: los tokens de color deben usar light-dark()`);
-            break;
-        }
+    if (!code.includes(':root[data-theme="dark"]')) {
+        failures.push(`${STYLESHEET}: falta el selector :root[data-theme="dark"]`);
+    }
+    if (code.includes(':root[data-theme="light"]')) {
+        failures.push(`${STYLESHEET}: sobra :root[data-theme="light"]: el claro es el valor por defecto`);
+    }
+    if (!code.includes('light-dark(')) {
+        failures.push(`${STYLESHEET}: los tokens de color deben usar light-dark()`);
     }
 
     /* Las tipografías son locales: nada de peticiones a terceros desde el CSS. */
@@ -550,13 +550,11 @@ function checkThemeContrast() {
     const code = stripCssComments(readFileSync(path, 'utf8'));
     const rootBlock = /^:root\s*\{([\s\S]*?)\n\}/m.exec(code);
 
-    if (!/color-scheme:\s*light\s+dark/.test(code)) {
-        failures.push(`${STYLESHEET}: :root debe declarar "color-scheme: light dark"`);
+    if (!/color-scheme:\s*light\s*;/.test(code)) {
+        failures.push(`${STYLESHEET}: :root debe declarar "color-scheme: light"`);
     }
-    for (const theme of ['light', 'dark']) {
-        if (!code.includes(`:root[data-theme="${theme}"]`)) {
-            failures.push(`${STYLESHEET}: falta el selector :root[data-theme="${theme}"]`);
-        }
+    if (!code.includes(':root[data-theme="dark"]')) {
+        failures.push(`${STYLESHEET}: falta el selector :root[data-theme="dark"]`);
     }
 
     const tokens = tokensOf(rootBlock ? rootBlock[1] : '');
