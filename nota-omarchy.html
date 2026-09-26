@@ -12,6 +12,8 @@
 </head>
 <body>
 
+    <div class="reading-progress" data-reading-progress aria-hidden="true"></div>
+
     <header class="site-header">
         <div class="site-title"><a href="index.html">Amauris Willmore</a></div>
         <div class="site-header__actions">
@@ -29,8 +31,19 @@
 
     <main>
         <article class="article">
-            <h1 class="page-title">Dual-boot extremo: Reducción de particiones con Omarchy Linux</h1>
-            <p class="article__meta">Agosto 2026 • Sistemas Operativos</p>
+            <nav class="article__context" aria-label="Ruta de lectura">
+                <div class="article__crumbs">
+                    <a href="index.html">Amauris Willmore</a>
+                    <span>/</span>
+                    <a href="blog.html">blog</a>
+                </div>
+                <time class="site-time" datetime="2026-08">Agosto 2026</time>
+            </nav>
+
+            <header class="article__header">
+                <h1 class="article__title">Dual-boot extremo: Reducción de particiones con Omarchy Linux</h1>
+                <p class="article__standfirst">Sistemas Operativos</p>
+            </header>
 
             <div class="article__body prose">
                 <p>Configurar un dual-boot en un entorno de producción siempre conlleva el riesgo de perder datos, pero es una necesidad cuando se desarrolla software multiplataforma.</p>

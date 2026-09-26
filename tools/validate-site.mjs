@@ -60,8 +60,8 @@ const SITE_NAME = 'Amauris Willmore';
 /** Tokens que la capa de diseño debe exponer siempre. */
 const REQUIRED_TOKENS = [
     '--color-bg', '--color-text', '--color-muted', '--color-surface', '--color-accent',
-    '--font-sans', '--font-mono', '--space-lg', '--text-base', '--reading-measure',
-    '--prose-measure'
+    '--color-line', '--color-code-dark', '--font-sans', '--font-mono', '--space-lg',
+    '--text-base', '--text-prose', '--reading-measure'
 ];
 
 const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
@@ -191,9 +191,17 @@ function checkDocumentShell(pages) {
         else if (titles.has(title)) failures.push(`${file}: el <title> se repite con ${titles.get(title)}`);
         else titles.set(title, file);
 
-        for (const name of ['header', 'main', 'footer']) {
+        for (const name of ['main', 'footer']) {
             const count = openings(tags, name).length;
             if (count !== 1) failures.push(`${file}: se esperaba un único <${name}>, hay ${count}`);
+        }
+
+        /* Varias <header> son válidas (la del artículo, como en ivan.codes), pero la
+           cabecera del sitio tiene que ser exactamente una. */
+        const siteHeaders = openings(tags, 'header')
+            .filter((tag) => attributeValue(tag, 'class') === 'site-header');
+        if (siteHeaders.length !== 1) {
+            failures.push(`${file}: se esperaba una única cabecera de sitio (.site-header), hay ${siteHeaders.length}`);
         }
     }
     return failures;
@@ -225,8 +233,8 @@ function checkStyleLayer(pages) {
     return failures;
 }
 
-/** Único JavaScript permitido: el interruptor de tema, siempre en un archivo externo. */
-const JS_ENTRY = 'assets/js/theme.js';
+/** Único JavaScript permitido, siempre en archivos externos y con una tarea cada uno. */
+const JS_ENTRIES = ['assets/js/theme.js', 'assets/js/reading-progress.js'];
 
 function checkScripts(pages) {
     const failures = [];
@@ -238,9 +246,9 @@ function checkScripts(pages) {
         for (const script of openings(tags, 'script')) {
             const src = attributeValue(script, 'src');
             if (!src) {
-                failures.push(`${file}:${script.line}: hay un <script> en línea; el código va en ${JS_ENTRY}`);
-            } else if (src !== JS_ENTRY) {
-                failures.push(`${file}:${script.line}: solo se permite ${JS_ENTRY}, no "${src}"`);
+                failures.push(`${file}:${script.line}: hay un <script> en línea; el código va en ${JS_ENTRIES.join(' o ')}`);
+            } else if (!JS_ENTRIES.includes(src)) {
+                failures.push(`${file}:${script.line}: solo se permiten ${JS_ENTRIES.join(' y ')}, no "${src}"`);
             }
         }
 
@@ -250,7 +258,17 @@ function checkScripts(pages) {
         }
     }
 
-    if (!existsSync(join(ROOT, JS_ENTRY))) failures.push(`${JS_ENTRY}: el archivo no existe`);
+    for (const entry of JS_ENTRIES) {
+        if (!existsSync(join(ROOT, entry))) failures.push(`${entry}: el archivo no existe`);
+    }
+
+    /* Cada página lleva la barra de progreso de lectura, como en ivan.codes. */
+    for (const page of pages.values()) {
+        if (page.missing) continue;
+        if (!openings(page.tags, 'div').some((tag) => hasAttribute(tag, 'data-reading-progress'))) {
+            failures.push(`${page.file}: falta la barra [data-reading-progress]`);
+        }
+    }
 
     /* Mejora progresiva: el interruptor se oculta sin JS y aparece con la clase .js. */
     const css = readFileSync(join(ROOT, STYLESHEET), 'utf8');
@@ -598,7 +616,7 @@ const CHECKS = [
     ['1. Existencia de las 12 páginas en la raíz', checkPagesExist],
     ['2. Esqueleto del documento (doctype, lang, meta y título)', checkDocumentShell],
     ['3. Capa de estilos externa única (sin CSS embebido ni en línea)', checkStyleLayer],
-    ['4. JavaScript acotado y externo (solo theme.js)', checkScripts],
+    ['4. JavaScript acotado y externo (theme + barra de progreso)', checkScripts],
     ['5. Anidamiento correcto de etiquetas', checkTagNesting],
     ['6. Enlaces internos resueltos (sin placeholders)', checkInternalLinks],
     ['7. Contrato de navegación (orden y aria-current)', checkNavigation],

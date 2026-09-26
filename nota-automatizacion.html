@@ -12,6 +12,8 @@
 </head>
 <body>
 
+    <div class="reading-progress" data-reading-progress aria-hidden="true"></div>
+
     <header class="site-header">
         <div class="site-title"><a href="index.html">Amauris Willmore</a></div>
         <div class="site-header__actions">
@@ -29,8 +31,19 @@
 
     <main>
         <article class="article">
-            <h1 class="page-title">Automatización de entornos: Batch, PowerShell y Winget</h1>
-            <p class="article__meta">Agosto 2026 • DevOps &amp; Scripts</p>
+            <nav class="article__context" aria-label="Ruta de lectura">
+                <div class="article__crumbs">
+                    <a href="index.html">Amauris Willmore</a>
+                    <span>/</span>
+                    <a href="blog.html">blog</a>
+                </div>
+                <time class="site-time" datetime="2026-08">Agosto 2026</time>
+            </nav>
+
+            <header class="article__header">
+                <h1 class="article__title">Automatización de entornos: Batch, PowerShell y Winget</h1>
+                <p class="article__standfirst">DevOps &amp; Scripts</p>
+            </header>
 
             <div class="article__body prose">
                 <p>Mantener un entorno de desarrollo funcional puede convertirse rápidamente en una tarea tediosa, especialmente cuando dependes de herramientas de software muy específicas que no deben actualizarse accidentalmente y romper compatibilidades.</p>

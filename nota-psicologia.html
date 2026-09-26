@@ -12,6 +12,8 @@
 </head>
 <body>
 
+    <div class="reading-progress" data-reading-progress aria-hidden="true"></div>
+
     <header class="site-header">
         <div class="site-title"><a href="index.html">Amauris Willmore</a></div>
         <div class="site-header__actions">
@@ -29,8 +31,19 @@
 
     <main>
         <article class="article">
-            <h1 class="page-title">Interfaces físicas: Psicología evolutiva aplicada al diseño de producto</h1>
-            <p class="article__meta">Julio 2026 • Diseño e Investigación</p>
+            <nav class="article__context" aria-label="Ruta de lectura">
+                <div class="article__crumbs">
+                    <a href="index.html">Amauris Willmore</a>
+                    <span>/</span>
+                    <a href="blog.html">blog</a>
+                </div>
+                <time class="site-time" datetime="2026-07">Julio 2026</time>
+            </nav>
+
+            <header class="article__header">
+                <h1 class="article__title">Interfaces físicas: Psicología evolutiva aplicada al diseño de producto</h1>
+                <p class="article__standfirst">Diseño e Investigación</p>
+            </header>
 
             <div class="article__body prose">
                 <p>Mi formación académica en Anatomía General y Psicología Evolutiva ha cambiado fundamentalmente la forma en la que abordo el diseño de interacción (UI/UX).</p>

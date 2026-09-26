@@ -12,6 +12,8 @@
 </head>
 <body>
 
+    <div class="reading-progress" data-reading-progress aria-hidden="true"></div>
+
     <header class="site-header">
         <div class="site-title"><a href="index.html">Amauris Willmore</a></div>
         <div class="site-header__actions">
@@ -29,8 +31,19 @@
 
     <main>
         <article class="article">
-            <h1 class="page-title">Estructurando la IA: Implementación del modelo Jev JSON</h1>
-            <p class="article__meta">Septiembre 2026 • IA &amp; Arquitectura</p>
+            <nav class="article__context" aria-label="Ruta de lectura">
+                <div class="article__crumbs">
+                    <a href="index.html">Amauris Willmore</a>
+                    <span>/</span>
+                    <a href="blog.html">blog</a>
+                </div>
+                <time class="site-time" datetime="2026-09">Septiembre 2026</time>
+            </nav>
+
+            <header class="article__header">
+                <h1 class="article__title">Estructurando la IA: Implementación del modelo Jev JSON</h1>
+                <p class="article__standfirst">IA &amp; Arquitectura</p>
+            </header>
 
             <div class="article__body prose">
                 <p>Los grandes modelos de lenguaje (LLMs) son potentes, pero en entornos de producción, las salidas en texto libre son un riesgo. Necesitamos determinismo estructural.</p>

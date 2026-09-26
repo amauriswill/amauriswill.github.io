@@ -24,27 +24,45 @@
 /* =============================================================================
  * 0. TIPOGRAFÍAS
  * -----------------------------------------------------------------------------
- * Google Sans Flex (variable) para el texto y Google Sans Code para el código,
- * auto-alojadas en assets/fonts con el subconjunto latino: cero peticiones a
- * terceros y cero dependencia de red externa. font-display: swap evita el
- * pantallazo en blanco mientras llegan.
+ * Inter (variable) para el texto e IBM Plex Mono para el código y los datos, las
+ * dos familias que usa ivan.codes, auto-alojadas en assets/fonts con el
+ * subconjunto latino: cero peticiones a terceros y cero dependencia de red
+ * externa. font-display: swap evita el pantallazo en blanco mientras llegan.
  * ========================================================================== */
 
 @font-face {
-    font-family: "Google Sans Flex";
+    font-family: "Inter";
     font-style: normal;
     font-weight: 100 900;
     font-display: swap;
-    src: url("../fonts/google-sans-flex-latin.woff2") format("woff2");
+    src: url("../fonts/inter-latin.woff2") format("woff2");
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-    font-family: "Google Sans Code";
+    font-family: "IBM Plex Mono";
     font-style: normal;
-    font-weight: 300 800;
+    font-weight: 400;
     font-display: swap;
-    src: url("../fonts/google-sans-code-latin.woff2") format("woff2");
+    src: url("../fonts/ibm-plex-mono-400-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/ibm-plex-mono-500-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/ibm-plex-mono-600-latin.woff2") format("woff2");
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -76,10 +94,20 @@
        para que también pueda usarse como color de texto (4.8:1). */
     --color-accent: #7c700f;
     --color-accent: light-dark(#7c700f, #f7df1e);    /* 4.8:1 claro · 14.6:1 oscuro */
+    /* Línea guía de las listas y marcos de código e imágenes. */
+    --color-line: #e0e0dc;
+    --color-line: light-dark(#e0e0dc, #2a2a2a);
+    /* Los bloques de código son oscuros en los dos temas, como los suyos. */
+    --color-code-dark: #151515;
+    --code-text: #e5e4e7; /* texto del bloque de código sobre la tarjeta oscura */
+    /* Tinta al 80% para la prosa: su prose-p:text-foreground/80. */
+    --text-ink-soft: color-mix(in srgb, var(--color-text) 80%, var(--color-bg));
 
-    /* --- Tipografía --- */
-    --font-sans: "Google Sans Flex", "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-mono: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    /* --- Tipografía ---
+       Inter (variable) para el texto y IBM Plex Mono para el código y los datos,
+       exactamente las dos familias que usa ivan.codes. */
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
     --weight-regular: 400;
     --weight-medium: 500;
     --weight-semibold: 600;
@@ -90,8 +118,10 @@
     --text-md: 1.05rem;
     --text-lg: 1.1rem;
     --text-xl: 1.4rem;
+    --text-2xl: 1.875rem;  /* h1 del artículo: su text-3xl */
+    --text-prose: 1.125rem; /* cuerpo del artículo: su prose-lg */
     --leading: 1.6;
-    --leading-prose: 1.7; /* texto corrido: más aire entre líneas */
+    --leading-prose: 1.8; /* su prose-p:leading-[1.8] */
 
     /* --- Escala de espaciado (única para márgenes, rellenos y gaps) --- */
     --space-3xs: 0.2rem;
@@ -108,11 +138,14 @@
     --space-6xl: 3.5rem;
     --space-7xl: 4rem;
 
-    /* --- Layout --- */
-    --reading-measure: 660px;  /* 74 caracteres por línea: antes 680px */
-    --prose-measure: 64ch;     /* columna de lectura de los artículos */
+    /* --- Layout ---
+       Contenedor de 42rem como su max-w-2xl. Su prosa llena todo el ancho
+       disponible, así que el artículo no lleva columna propia. */
+    --reading-measure: 672px;
     --gutter: 1.5rem;
     --radius-sm: 4px;
+    --radius-lg: 0.5rem;
+    --space-prose: 1.4rem; /* separación de párrafo: 1.25em sobre 18px */
 
     /* --- Movimiento --- */
     --transition-color: color 0.2s ease-in-out;
@@ -162,13 +195,12 @@ img {
 body {
     max-width: calc(var(--reading-measure) + (2 * var(--gutter)));
     margin: 0 auto;
-    padding: var(--space-5xl) var(--gutter);
+    padding: var(--space-7xl) var(--gutter); /* su py-16 */
 
     font-family: var(--font-sans);
     font-size: 1rem;
     font-weight: var(--weight-regular);
     line-height: var(--leading);
-    font-optical-sizing: auto; /* usa el eje opsz de Google Sans Flex */
     color: var(--color-text);
     background-color: var(--color-bg);
     /* El cambio de tema se ve suave, como en ivan.codes. */
@@ -227,43 +259,107 @@ h3 {
     text-wrap: balance; /* evita títulos con una palabra huérfana al final */
 }
 
-/* Títulos y subtítulos en Google Sans Code. La prosa, el contenido de las
-   secciones, la cabecera y el pie se quedan en Google Sans Flex. */
-h1,
-h2,
-h3,
-.subtitle {
-    font-family: var(--font-mono);
+/* Sus títulos van en la sans (h1 semibold con tracking-tight) y sus listas
+   en monoespaciada: solo los datos, el código y las listas usan IBM Plex Mono. */
+.article__title {
+    margin: 0 0 var(--space-md);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-semibold);
+    line-height: 1.25;        /* leading-tight */
+    letter-spacing: -0.025em; /* tracking-tight */
 }
 
-/* Bloque de prosa: ritmo de lectura más pausado que el de la interfaz. */
+.article__standfirst {
+    margin: 0;
+    line-height: 1.625; /* leading-relaxed */
+    color: var(--color-muted);
+}
+
+/* Bloque de prosa: los valores de su Tailwind prose-lg, con la tinta al 80%. */
 .prose {
-    font-size: var(--text-md);
+    font-size: var(--text-prose);
     line-height: var(--leading-prose);
+    color: var(--text-ink-soft);
 }
 
 .prose p {
-    margin: 0 0 var(--space-2xl);
-    text-wrap: pretty; /* equilibra las últimas líneas de cada párrafo */
+    margin: 0 0 var(--space-prose);
+    text-wrap: pretty;
 }
 
 .prose h2 {
-    font-size: var(--text-lg);
-    margin-top: var(--space-4xl);
-    margin-bottom: var(--space-lg);
+    margin: 2em 0 1em;
+    font-size: 1.5em;
+    letter-spacing: -0.025em;
 }
 
+.prose h3 {
+    margin: 1.5em 0 0.5em;
+    font-size: 1.25em;
+    letter-spacing: -0.025em;
+}
+
+.prose strong {
+    color: var(--color-text);
+}
+
+.prose li {
+    color: var(--text-ink-soft);
+}
+
+/* Su viñeta de lista va en el color de acento. */
+.prose li::marker {
+    color: var(--color-accent);
+}
+
+.prose blockquote {
+    margin: 1.6em 0;
+    padding-left: 1.6em;
+    border-left: 2px solid var(--color-accent);
+    color: var(--color-muted);
+    font-style: normal;
+}
+
+.prose img {
+    width: 100%;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+}
+
+/* Código en línea: su chip con fondo tenue, marco y radio pequeño. */
 code {
+    padding: 0.1em 0.35em;
     font-family: var(--font-mono);
+    font-size: 0.82em;
+    font-weight: var(--weight-medium);
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
 }
 
+/* Bloque de código: tarjeta oscura con marco claro, también en tema claro. */
 pre {
-    margin: 0 0 var(--space-xl);
+    margin: 0 0 var(--space-prose);
     padding: var(--space-lg);
-    background: var(--color-surface);
-    border-radius: var(--radius-sm);
+    background: var(--color-code-dark);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
     overflow-x: auto;
-    font-size: var(--text-sm);
+    font-size: 0.85em;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+pre code {
+    padding: 0;
+    font-size: 0.875em;
+    font-weight: var(--weight-regular);
+    color: var(--code-text);
+    background: none;
+    border: 0;
+    border-radius: 0;
 }
 
 /* =============================================================================
@@ -369,26 +465,13 @@ pre {
     font-size: var(--text-xl);
 }
 
-/* Etiqueta de sección: versalitas muy espaciadas, el patrón de ivan.codes. La
-   marca de acento es un guion corto delante, no un bloque de color. */
+/* Etiqueta de sección: su patrón real es texto pequeño y apagado, sin
+   mayúsculas ni marca de color. El acento lo llevan los enlaces y las viñetas. */
 .section-title {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    margin-top: var(--space-6xl);
-    margin-bottom: var(--space-lg);
-    font-size: var(--text-2xs);
-    font-weight: var(--weight-semibold);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    margin: var(--space-5xl) 0 var(--space-md);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
     color: var(--color-muted);
-}
-
-.section-title::before {
-    content: "";
-    width: var(--space-2xl);
-    height: var(--space-3xs);
-    background-color: var(--color-accent);
 }
 
 .subtitle {
@@ -410,12 +493,24 @@ pre {
 }
 
 .entry__body {
-    max-width: 80%;
+    max-width: 100%;
 }
 
+/* Título monoespaciado con línea guía hasta el metadato, como sus listas. */
 .entry__title {
-    display: block;
-    font-weight: var(--weight-medium);
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+}
+
+.entry__title::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background-color: var(--color-line);
 }
 
 .entry__desc {
@@ -505,18 +600,34 @@ pre {
     font-weight: var(--weight-semibold);
 }
 
-/* Títulos y roles de proyecto en Google Sans Code, igual que los títulos de
-   sección; la descripción y las etiquetas se quedan en Google Sans Flex. */
+/* Títulos y roles de proyecto en monoespaciada, como sus productos; la
+   descripción y las etiquetas se quedan en la sans. */
 .project__title,
 .project__role {
     font-family: var(--font-mono);
 }
 
-/* Metadatos (fechas y años) en Google Sans Code, como los datos de ivan.codes. */
-.article__meta,
+/* La cabecera de proyecto lleva la misma línea guía que las entradas. */
+.project__title {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+}
+
+.project__title::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background-color: var(--color-line);
+}
+
+/* Metadatos (fechas y años) en IBM Plex Mono, como sus datos. */
 .project__meta,
 .entry__meta {
     font-family: var(--font-mono);
+    font-size: var(--text-2xs);
 }
 
 .project__meta {
@@ -536,17 +647,40 @@ pre {
     color: var(--color-muted);
 }
 
-/* --- 4.6 Artículos --- */
+/* --- 4.6 Artículos ---
+   Su página de artículo es: fila de contexto con la fecha a la derecha,
+   cabecera con el título grande y su subtítulo, y la prosa ocupando todo el
+   ancho del contenedor (sin columna propia). */
 
-/* Columna de lectura: 64ch deja el texto en 60-75 caracteres por línea. */
-.article__body {
-    max-width: var(--prose-measure);
+.article__context {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-4xl); /* su mb-12 */
+    font-size: var(--text-sm);
+    color: var(--color-muted);
 }
 
-.article__meta {
-    margin: 0 0 var(--space-4xl);
-    font-size: var(--text-base);
-    color: var(--color-muted);
+.article__crumbs {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+}
+
+.article__crumbs a:hover {
+    color: var(--color-text);
+}
+
+/* La fecha va en monoespaciada, como su <time class="font-mono text-xs">. */
+.site-time {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    white-space: nowrap;
+}
+
+.article__header {
+    margin-bottom: var(--space-7xl); /* su mb-12 */
 }
 
 .article__back {
@@ -646,6 +780,20 @@ pre {
     margin-bottom: var(--space-3xs);
 }
 
+/* --- 4.10 Barra de progreso de lectura (como la suya) --- */
+
+.reading-progress {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: var(--space-3xs);
+    z-index: 10;
+    background-color: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: 0%;
+}
+
 /* =============================================================================
  * 5. UTILIDADES
  * ========================================================================== */
@@ -668,18 +816,24 @@ pre {
  * ========================================================================== */
 
 @media (max-width: 550px) {
+    body {
+        padding: var(--space-6xl) var(--gutter);
+    }
+
     .entry {
         flex-direction: column;
         gap: var(--space-xs);
     }
 
-    .entry__body {
-        max-width: 100%;
-    }
-
     .entry__meta {
         margin-left: 0;
         text-align: left;
+    }
+
+    /* En columna la línea guía no aporta nada:hidden sm:block en el suyo. */
+    .entry__title::after,
+    .project__title::after {
+        display: none;
     }
 
     .project__header {

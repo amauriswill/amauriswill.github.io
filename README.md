@@ -1,7 +1,7 @@
 # amauriswill.github.io
 
 Portafolio personal de **Amauris Willmore Medrano**: sitio estático de una sola columna,
-tipografías Google Sans auto-alojadas y tema claro/oscuro con interruptor.
+Inter + IBM Plex Mono auto-alojadas y tema claro/oscuro con interruptor.
 
 ## Mapa del repositorio
 
@@ -20,8 +20,9 @@ tipografías Google Sans auto-alojadas y tema claro/oscuro con interruptor.
 ├── nota-educacion.html
 ├── nota-psicologia.html
 ├── assets/css/main.css   Capa de presentación única (tokens + componentes)
-├── assets/fonts/         Google Sans Flex y Google Sans Code (woff2, subconjunto latino)
-├── assets/js/theme.js    Único JavaScript: el interruptor de tema
+├── assets/fonts/         Inter e IBM Plex Mono (woff2, subconjunto latino)
+├── assets/js/theme.js    Interruptor de tema (claro por defecto)
+├── assets/js/reading-progress.js  Barra de progreso de lectura
 ├── assets/icons/         Icono local del interruptor (SVG)
 ├── assets/img/           Fotografías del sitio (convención en su README)
 ├── tools/validate-site.mjs  Pruebas de conformidad arquitectónica
@@ -32,14 +33,14 @@ tipografías Google Sans auto-alojadas y tema claro/oscuro con interruptor.
 
 | Capa | Dónde vive | Responsabilidad |
 |---|---|---|
-| Tipografías | `main.css` §0 | `@font-face` de Google Sans Flex y Google Sans Code, auto-alojadas |
+| Tipografías | `main.css` §0 | `@font-face` de Inter e IBM Plex Mono, auto-alojadas |
 | Tokens de diseño | `main.css` §1 | Única fuente de verdad de color, tipografía, espaciado y medidas de lectura |
 | Reset mínimo | `main.css` §2 | Normalización local, sin frameworks ni dependencias |
 | Elementos base | `main.css` §3 | Tipografía, enlaces, ritmo de prosa y columnas de lectura |
 | Layout y componentes | `main.css` §4 | `.site-header`, `.theme-switch`, `.page-title`, `.section-title`, `.subtitle`, `.entry`, `.project`, `.article`, `.tags` / `.tag`, `.gallery` / `.photo`, `.section-more`, `.credentials`, `.site-footer` |
 | Utilidades | `main.css` §5 | `.visually-hidden` (contenido solo para lectores de pantalla y buscadores) |
 | Responsive | `main.css` §6 | Un único breakpoint en 550px |
-| Comportamiento | `assets/js/theme.js` | Interruptor de tema; sin él, el sitio sigue el sistema |
+| Comportamiento | `assets/js/*.js` | Interruptor de tema y barra de progreso; sin ellos, el sitio se queda en claro |
 | Contenido | los 12 `*.html` | Markup semántico sin presentación |
 | Contrato verificable | `tools/validate-site.mjs` | Impide que las capas se mezclen o se degraden con el tiempo |
 
@@ -49,7 +50,7 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 ## Reglas del proyecto (Clean Code)
 
 1. Cero CSS embebido y cero atributos `style` en línea.
-2. JavaScript mínimo y externo: el único archivo es `assets/js/theme.js`, nunca
+2. JavaScript mínimo y externo: solo `assets/js/theme.js` y `assets/js/reading-progress.js`, nunca
    `<script>` en línea ni manejadores `on*` en atributos.
 3. Sin `!important`, sin selectores de ID, sin valores mágicos (todo valor visual es un token).
 4. Convención de nombres **BEM-lite**: `.bloque`, `.bloque__elemento`, `.bloque--variante`.
@@ -149,32 +150,45 @@ Así hay un único acento para los dos temas, derivado del hex que indicaste, y 
 
 Lo que sí se ha adoptado de su sitio:
 
-- **Etiquetas de sección** en versalitas muy espaciadas (`letter-spacing: 0.18em`, 0.75 rem,
-  monoespaciada) con una marca cuadrada coral delante.
+- **La página de artículo**, replicada desde su marcado real: fila de contexto con las migas a la
+  izquierda y la fecha en monoespaciada a la derecha, cabecera con el `h1` a 1,875 rem
+  (`text-3xl`), `semibold`, `tracking-tight` y `leading-tight`, subtítulo apagado, y después la
+  prosa ocupando todo el ancho del contenedor.
+- **La prosa con sus valores de Tailwind `prose-lg`**: 1,125 rem, interlineado 1,8, tinta al 80%
+  (`color-mix`), títulos en `em` con `tracking-tight`, citas con barra de acento de 2 px, viñetas de
+  lista en acento, código en línea como chip con marco y radio pequeño, y bloques de código como
+  tarjeta oscura con marco claro **también en tema claro**.
+- **Contenedor de 42 rem** (su `max-w-2xl`) con relleno vertical de 4 rem.
+- **Barra de progreso de lectura**: línea de acento fija arriba que crece con el scroll.
+- **Listas con línea guía**: título monoespaciado, guion fino hasta el metadato y fecha a la
+  derecha, con el título en acento al pasar el ratón. También en móvil desaparece la línea guía.
 - **Cambio de tema animado** en `body`: 0,3 s de transición de fondo y tinta.
-- **El acento `#f7df1e`** marca la página activa del menú, los enlaces y el guion de las etiquetas
-  de sección; con su variante oscura derivada para que se pueda leer en tema claro.
+- **El acento `#f7df1e`** en los enlaces, las viñetas, la barra de progreso y la línea guía.
 - **El cuerpo sigue en 16 px**, aunque su escala baja a 14-15 px: se lee más cómodo.
 
 Lo que **no** se ha copiado, y por qué:
 
-- Sus hairlines (`--border: #d4d4d4`): aquí la separación es por espacio, sin bordes decorativos.
-- Sus tipografías (Inter + IBM Plex Mono): se mantienen Google Sans Flex y Google Sans Code, que
-  elegiste expresamente, repartidas por rol como se describe más abajo.
-- Su tipografía de 10vw para el display: no hace falta con nuestro contenido.
+- Sus hairlines como separadores de lista (`--border: #d4d4d4`): la separación entre bloques es
+  por espacio. Sí se usan líneas dentro de los componentes donde él las usa: la guía de las listas
+  y los marcos de código e imágenes.
+- Su escala de 14-15 px y su tipografía de display de 10vw: aquí el cuerpo se queda en 16 px y no
+  hace falta un titular gigante para nuestro contenido.
+- Su barra de "copy prompt" y el resaltado de sintaxis con Shiki: son piezas de su contenido, no
+  de la maqueta; el CSS del bloque de código ya está listo para cuando haya un `<pre>`.
 
 ## Tipografías
 
-`Google Sans Flex` (texto) y `Google Sans Code` (código) están **auto-alojadas** en `assets/fonts/`
-con el subconjunto latino: 117 KB + 34 KB, sin peticiones a Google en cada visita. Se sirven con
-`font-display: swap` y `font-optical-sizing: auto` para que el eje `opsz` afine las formas al
-tamaño de lectura.
+`Inter` (texto) y `IBM Plex Mono` (código y datos), las dos familias que usa ivan.codes,
+**auto-alojadas** en `assets/fonts/` con el subconjunto latino: 48 KB + 45 KB en total, sin una
+sola petición a Google en cada visita, y con `font-display: swap`.
 
-El reparto es deliberado: **títulos y subtítulos** (`h1`, `h2`, `h3` y `.subtitle`) y también los
-**títulos y roles de proyecto** (`.project__title`, `.project__role`) usan Google Sans Code,
-mientras que la prosa, las descripciones, las etiquetas, el contenido de las secciones, la cabecera
-y el pie se quedan en Google Sans Flex. Así los títulos hacen de firma técnica y el texto corrido
-se lee más abierto.
+El reparto es el de su sitio:
+
+- **Inter** para la prosa, los títulos de página, el subtítulo y las descripciones.
+- **IBM Plex Mono** para los títulos de las listas (`.entry__title`, `.project__title`), los roles
+  (`.project__role`), los metadatos y fechas (`.entry__meta`, `.project__meta`, `.site-time`) y el
+  código.
+- El `h1` del artículo va en Inter, como el suyo: es un titular, no un dato.
 
 El subconjunto latino no incluye las flechas `U+2190`/`U+2192`, así que el sitio usa comillas
 angulares (`»`, `«`) en los enlaces de continuar y de volver, que además encajan mejor con la
