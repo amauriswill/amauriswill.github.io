@@ -34,7 +34,8 @@ const PAGES = {
 /** Menú principal: solo lo que un reclutador necesita (el resto vive en el pie). */
 const NAV_ORDER = ['index.html', 'proyectos.html', 'blog.html', 'contact.html'];
 
-/** Enlaces del pie: perfiles y, después, las secciones secundarias. */
+/** Enlaces del pie: perfiles y, después, las secciones secundarias.
+    El pie es un solo grupo de enlaces centrado; ya no lleva llamada a la acción. */
 const FOOTER_LINKS = [
     'mailto:amauriswillwork@gmail.com',
     'https://github.com/amauriswill',
@@ -42,8 +43,7 @@ const FOOTER_LINKS = [
     'https://behance.net/amauriswill',
     'https://youtube.com/@amaurisfolio',
     'uses.html',
-    'photos.html',
-    'contact.html' // la llamada a la acci\u00f3n del pie, a la derecha
+    'photos.html'
 ];
 
 /** Contraste mínimo exigido por WCAG sobre el fondo, en ambos temas. */
@@ -618,7 +618,7 @@ const CHECKS = [
     ['5. Anidamiento correcto de etiquetas', checkTagNesting],
     ['6. Enlaces internos resueltos (sin placeholders)', checkInternalLinks],
     ['7. Contrato de navegación (orden y aria-current)', checkNavigation],
-    ['8. Contrato de pie de página (7 enlaces y rel seguro)', checkFooterContract],
+    ['8. Contrato de pie de página (enlaces y rel seguro)', checkFooterContract],
     ['9. Contrato de identidad (nombre del sitio en la cabecera)', checkSiteIdentity],
     ['10. Tokens de diseño de la hoja única', checkDesignTokens],
     ['11. Contraste WCAG de los temas claro y oscuro', checkThemeContrast]

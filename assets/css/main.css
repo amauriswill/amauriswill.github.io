@@ -970,12 +970,12 @@ body:not(.is-single-screen) {
     text-align: right;
 }
 
-/* --- 7.3 Pie en dos grupos: enlaces a la izquierda, llamada a la derecha --- */
+/* --- 7.3 Pie centrado: un solo grupo de enlaces --- */
 
 .site-footer {
     display: flex;
     align-items: baseline;
-    justify-content: space-between;
+    justify-content: center;
     gap: var(--space-lg);
     margin-top: var(--space-7xl);
     padding-top: var(--space-3xl);
@@ -985,6 +985,8 @@ body:not(.is-single-screen) {
 .site-footer__links {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
     gap: var(--space-md);
 }
 
@@ -996,17 +998,6 @@ body:not(.is-single-screen) {
 
 .site-footer a:hover {
     color: var(--color-text);
-}
-
-/* La llamada a la accion vive en el borde derecho: es lo unico del pie que
-   puede reclamar atención. */
-.site-footer__cta {
-    flex: 0 0 auto;
-    white-space: nowrap;
-}
-
-.site-footer__cta:hover {
-    color: var(--color-accent);
 }
 
 @media (max-width: 550px) {

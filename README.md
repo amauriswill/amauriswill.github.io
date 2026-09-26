@@ -64,6 +64,7 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 7. Cabecera y pie son **contratos idénticos** en todas las páginas y están verificados por el test.
    La navegación principal tiene cuatro secciones (inicio, proyectos, blog, contact); `uses` y
    `photos` son secundarias y viven en el pie, para no dispersar a quien viene a evaluar trabajo.
+   El pie es un unico grupo de enlaces centrado, sin llamada a la accion.
 8. Enlaces externos siempre con `target="_blank"` + `rel="noopener noreferrer"`.
 9. UTF-8 sin BOM en todos los archivos.
 10. Cada tema cumple contraste mínimo sobre el fondo: texto 7:1; texto atenuado y acento 4.5:1.
@@ -272,7 +273,9 @@ Se sostiene con tres decisiones, todas en la capa 8 de `assets/css/main.css`:
    en lugar de anclarse al borde inferior. Anclarlo dejaba un vacio de mas de
    200px entre el ultimo listado y el pie: es lo mas visible que habia.
 2. Una sola columna, como la suya: la prosa y los listados comparten el mismo
-   ancho de lectura. La prosa se mide a `32em`, mas estrecha que la columna.
+   ancho de lectura. La prosa ya no lleva tope propio: usa el ancho completo de
+   la columna, igual que la frase de entrada, y asi sus bordes derechos caen en
+   la misma vertical.
 3. La escala tipografica y los huecos se miden en `vh` con `clamp()`, asi que en
    una ventana baja el sitio se comprime en lugar de desbordarse.
 
