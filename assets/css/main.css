@@ -605,53 +605,6 @@ body:not(.is-single-screen) {
     color: var(--color-muted);
 }
 
-.podcast-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    padding: var(--space-lg) 0;
-}
-
-.podcast-card__title {
-    display: flex;
-    align-items: baseline;
-    flex: 1 1 auto;
-    min-width: 0;
-    gap: var(--space-md);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text);
-}
-
-.podcast-card__title::after {
-    content: "";
-    flex: 1 1 auto;
-    min-width: var(--space-lg);
-    height: 1px;
-    background-color: var(--color-line);
-}
-
-.podcast-card__meta {
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
-    color: var(--color-muted);
-    white-space: nowrap;
-}
-
-.podcast-card__desc {
-    margin: 0;
-    font-size: var(--text-base);
-    color: var(--color-muted);
-}
-
-.podcast-card__frame {
-    width: 100%;
-    max-width: 100%;
-    border: 0;
-    border-radius: var(--radius-sm);
-    display: block;
-}
-
 .episode-card {
     display: flex;
     flex-direction: column;
