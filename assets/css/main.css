@@ -152,9 +152,9 @@
        legible con espacio reducido, para que comprimir nunca saque texto. */
     --screen-pad-y: clamp(0.7rem, 2.4vh, 2rem);
     --screen-gap: clamp(0.7rem, 2.2vh, 1.75rem);
-    --screen-lead: clamp(0.95rem, 1.9vh, 1.25rem);
+    --screen-lead: clamp(0.9rem, 1.62vh, 1.08rem);
     --screen-prose: clamp(0.78rem, 1.3vh, 0.92rem);
-    --screen-row-pad: clamp(0.15rem, 0.62vh, 0.45rem);
+    --screen-row-pad: clamp(0.12rem, 0.55vh, 0.42rem);
     --radius-sm: 4px;
     --radius-lg: 0.5rem;
     --space-prose: 1.35rem; /* separación de párrafo: su 1.25em sobre 17px */
@@ -852,7 +852,7 @@ pre code {
 /* La frase de entrada es lo unico del sitio que va en tinta plena y sube de
    tamano: es el titulo real de la pagina. */
 .hero__lead {
-    max-width: 30em;
+    max-width: none;
     margin: 0 0 var(--space-lg);
     font-size: var(--text-md);
     line-height: 1.5;
@@ -899,10 +899,15 @@ pre code {
     padding: var(--space-sm) 0;
 }
 
+/* El titulo crece para que su guia tenga espacio que repartir: si el <a> se
+   ajusta a su texto, el flex:1 de la guia no tiene nada que absorber y la
+   linea desaparece. Ese es el mecanismo completo de la fila. */
 .row__title {
+    flex: 1 1 auto;
     display: flex;
     align-items: baseline;
     gap: var(--space-md);
+    min-width: 0;
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     font-weight: var(--weight-regular);
@@ -924,8 +929,12 @@ pre code {
     color: var(--color-accent);
 }
 
+/* El metadato es un conjunto de valores en columna, no una frase: "2024" y la
+   herramienta se leen como dos celdas separadas por un hueco constante. */
 .row__meta {
     flex: 0 0 auto;
+    display: flex;
+    gap: var(--space-md);
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
     color: var(--color-muted);
@@ -1074,14 +1083,15 @@ body.is-single-screen .reading-progress {
 }
 
 .is-single-screen .hero__lead {
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--screen-gap);
     font-size: var(--screen-lead);
+    line-height: 1.45;
 }
 
 /* El bloque de prosa se reparte en el hueco sobrante y se recorta por abajo
    solo si de verdad no cabe; en el caso normal conserva sus tres parrafos. */
 .is-single-screen .hero .prose {
-    max-width: 46em;
+    max-width: 32em;
     font-size: var(--screen-prose);
     line-height: var(--leading);
 }
@@ -1114,19 +1124,25 @@ body.is-single-screen .reading-progress {
     }
 }
 
-/* Los dos listados en paralelo. auto-fit hace el colapso a una columna por su
-   cuenta cuando el ancho no alcanza, sin abrir un segundo breakpoint. */
+/* Una sola columna, como la suya: la prosa y los listados comparten el mismo
+   ancho y se leen de arriba abajo. Aqui no hay rejilla que repartir. */
 .home-columns {
     flex: 1 1 auto;
     min-height: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: var(--space-3xl) var(--space-5xl);
-    align-content: start;
 }
 
+/* Cada seccion abre con aire: sin este margen superior, el rótulo se pegaba a
+   la ultima fila del listado anterior y los dos bloques se leian como uno. */
+/* Cada seccion abre con aire: sin este margen superior el rotulo se pegaba a
+   la ultima fila del listado anterior y los dos bloques se leian como uno.
+   El margen se anula solo en la primera seccion de la portada, que ya esta
+   separada del texto por el hueco del bloque. */
 .is-single-screen .section-title {
-    margin: 0 0 var(--space-sm);
+    margin: var(--screen-gap) 0 var(--space-sm);
+}
+
+.is-single-screen .home-columns > section:first-child .section-title {
+    margin-top: 0;
 }
 
 .is-single-screen .row {

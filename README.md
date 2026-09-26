@@ -293,4 +293,5 @@ node tools/measure-viewport.mjs blog.html   # paginas interiores: si deben hacer
 ```
 
 Abre Chrome sin interfaz, carga la pagina a cinco tamanos y compara
-`document.scrollHeight` con la altura visible.
+`document.scrollHeight` con la altura visible. Con `MEASURE_SHOT=ruta.png` deja ademas una
+captura de la portada, que es la forma util de comparar el resultado con la referencia.

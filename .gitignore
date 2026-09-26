@@ -5,3 +5,4 @@ desktop.ini
 
 # Dependencias (el sitio no tiene, pero se previene su inclusión futura)
 node_modules/
+tools/_captura.png

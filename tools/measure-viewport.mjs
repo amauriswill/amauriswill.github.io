@@ -14,7 +14,7 @@
 import { spawn } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { connect } from 'node:net';
-import { mkdtempSync, existsSync, rmSync } from 'node:fs';
+import { mkdtempSync, existsSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -221,6 +221,17 @@ function openSocket(url) {
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+/** Captura la portada renderizada para compararla a ojo con la referencia. */
+async function capture(client, session, fileUrl, out) {
+    await session('Emulation.setDeviceMetricsOverride', {
+        width: 1440, height: 900, deviceScaleFactor: 1, mobile: false
+    });
+    await session('Page.navigate', { url: fileUrl });
+    await sleep(900);
+    const shot = await session('Page.captureScreenshot', { format: 'png' });
+    const data = shot.result.data;
+    writeFileSync(out, Buffer.from(data, 'base64'));
+}
 
 async function main() {
     const client = await openSocket(await waitForDevTools());
@@ -278,7 +289,7 @@ async function main() {
 
     console.log(overflows === 0
         ? '\nRESULTADO GLOBAL: cabe en una sola pantalla en todos los tama\u00f1os'
-        : `\nRESULTADO GLOBAL: hay scroll en ${overflows} de ${VIEWPORTS.length} tama\u00f1os`);
+        : `\nRESULTADO GLOBAL: hay scroll en ${overflows} de ${VIEWPORTS.length} tamaños`);
 
     cleanup();
     process.exit(overflows === 0 ? 0 : 1);
