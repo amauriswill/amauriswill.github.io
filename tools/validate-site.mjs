@@ -2,7 +2,7 @@
 /**
  * validate-site.mjs — Pruebas de conformidad arquitectónica del portafolio.
  * -----------------------------------------------------------------------------
- * Es el "contrato ejecutable" del proyecto: comprueba que las 9 páginas
+ * Es el "contrato ejecutable" del proyecto: comprueba que las 10 páginas
  * respeten las decisiones de arquitectura y las reglas de estilo.
  * Sin dependencias externas (solo Node >= 18).
  *
@@ -25,10 +25,11 @@ const PAGES = {
     'nota-automatizacion.html': 'notas.html',
     'nota-omarchy.html': 'notas.html',
     'nota-educacion.html': 'notas.html',
-    'nota-psicologia.html': 'notas.html'
+    'nota-psicologia.html': 'notas.html',
+    'stack.html': 'stack.html'
 };
 
-const NAV_ORDER = ['index.html', 'proyectos.html', 'notas.html'];
+const NAV_ORDER = ['index.html', 'proyectos.html', 'notas.html', 'stack.html'];
 
 const FOOTER_LINKS = [
     'mailto:amauriswillwork@gmail.com',
@@ -428,7 +429,7 @@ function checkDesignTokens() {
  * ========================================================================== */
 
 const CHECKS = [
-    ['1. Existencia de las 9 páginas en la raíz', checkPagesExist],
+    ['1. Existencia de las 10 páginas en la raíz', checkPagesExist],
     ['2. Esqueleto del documento (doctype, lang, meta y título)', checkDocumentShell],
     ['3. Capa de estilos externa única (sin CSS embebido ni en línea)', checkStyleLayer],
     ['4. Cero JavaScript', checkNoScripts],
