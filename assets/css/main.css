@@ -85,6 +85,11 @@
 
     --reading-measure: 576px;
     --reading-measure-wide: 672px;
+
+    /* Zona tactil. 44px es el minimo recomendado por Apple (HIG) y Material;
+       por debajo de eso el dedo tapa el enlace y se falla la pulsacion. */
+    --touch-target: 2.75rem;
+    --touch-pad: 0.75rem;
     --page-pad-y: 6rem;
     --gutter: 1.5rem;
 
@@ -922,6 +927,46 @@ body:not(.is-single-screen) {
     .site-footer {
         flex-direction: column;
         gap: var(--space-md);
+    }
+
+    /* Zona tactil minima de 44px. El alto se fija con padding, no con altura,
+       para que un titulo largo de dos lineas no se recorte; el ancho lo
+       determina el texto, salvo en los enlaces cortos de la navegacion. */
+    .site-nav a,
+    .site-footer a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: var(--touch-target);
+        min-width: var(--touch-target);
+    }
+
+    .row__title,
+    .entry__title {
+        padding-block: var(--touch-pad);
+        min-height: var(--touch-target);
+    }
+
+    /* El logo es una imagen: el texto alternativo no hereda caja. */
+    .site-title a {
+        min-height: var(--touch-target);
+        min-width: var(--touch-target);
+    }
+
+    .podcast-bar__cta,
+    .article__back,
+    .article__crumbs a {
+        display: inline-flex;
+        align-items: center;
+        min-height: var(--touch-target);
+        min-width: var(--touch-target);
+    }
+
+    .theme-switch {
+        min-width: var(--touch-target);
+        min-height: var(--touch-target);
+        padding: 0;
+        justify-content: center;
     }
 }
 
