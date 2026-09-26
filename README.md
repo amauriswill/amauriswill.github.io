@@ -61,8 +61,9 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 6. El estado de la página activa se expresa con `aria-current="page"` (semántica y
    accesibilidad), no con una clase adjetiva.
 7. Cabecera y pie son **contratos idénticos** en todas las páginas y están verificados por el test.
-   La navegación principal tiene cuatro secciones (inicio, proyectos, blog, contacto),
-   todas en español y con estado activo. `uses` es secundaria y vive solo en el pie.
+   La navegación principal tiene cuatro secciones (proyectos, podcast, blog, contacto),
+   todas en español y con estado activo. `inicio` no aparece en el nav: el logo
+   del sitio cumple esa función. `uses` es secundaria y vive solo en el pie.
    El pie es un unico grupo de enlaces centrado, sin llamada a la accion.
 8. Enlaces externos siempre con `target="_blank"` + `rel="noopener noreferrer"`.
 9. UTF-8 sin BOM en todos los archivos.

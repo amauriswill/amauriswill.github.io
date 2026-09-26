@@ -6,8 +6,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const PAGES = {
-    'index.html': 'index.html',
+    'index.html': null,
     'proyectos.html': 'proyectos.html',
+    'podcast.html': 'podcast.html',
     'blog.html': 'blog.html',
     'uses.html': null,
     'contact.html': 'contact.html',
@@ -19,7 +20,7 @@ const PAGES = {
     'nota-psicologia.html': 'blog.html'
 };
 
-const NAV_ORDER = ['index.html', 'proyectos.html', 'blog.html', 'contact.html'];
+const NAV_ORDER = ['proyectos.html', 'podcast.html', 'blog.html', 'contact.html'];
 
 const FOOTER_LINKS = [
     'mailto:amauriswillwork@gmail.com',

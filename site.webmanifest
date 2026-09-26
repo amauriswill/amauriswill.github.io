@@ -1,0 +1,18 @@
+{
+  "name": "Amauris Willmore",
+  "short_name": "AW",
+  "description": "Portafolio de Amauris Willmore. Software engineer, product designer (UI/UX) y especialista en produccion audiovisual.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#fafafa",
+  "background_color": "#fafafa",
+  "icons": [
+    { "src": "assets/icons/aw-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "assets/icons/aw-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "assets/icons/aw-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/aw-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/icons/aw-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
