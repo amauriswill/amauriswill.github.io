@@ -118,7 +118,6 @@
     --text-base: 0.95rem;
     --text-md: 1.05rem;
     --text-lg: 1.1rem;
-    --text-xl: 1.4rem;
     --text-2xl: 1.875rem;  /* h1 del artículo: su text-3xl */
     --text-prose: 1.0625rem; /* 17px: la prosa del artículo, algo más compacta que la suya */
     --leading: 1.6;
@@ -479,16 +478,31 @@ pre code {
 
 /* --- 4.2 Encabezados de página y texto de apoyo --- */
 
+/* Criterio de portada aplicado a las secciones: el titulo de pagina usa la
+   misma escala que la frase de entrada y abre con el mismo aire de columna.
+   Antes estaba en --text-xl (22px) con un margen superior de 3xl, bastante
+   mayor que el hueco que deja la portada, asi que cada pagina empezaba mas
+   abajo que la portada. */
+/* Criterio de portada en las secciones cortas: la portada recorta el aire
+   vertical de la caja de lectura (--page-pad-y) para que todo entre en una
+   pantalla. Las secciones largas necesitan ese aire, pero las cortas
+   (contact, uses) se quedaban a unos pocos pixeles de desbordar. */
+body:not(.is-single-screen) {
+    padding-top: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+}
+
 .page-title {
-    margin-top: var(--space-3xl);
+    margin-top: var(--space-2xl);
     margin-bottom: var(--space-sm);
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
+    line-height: 1.3;
 }
 
 /* Etiqueta de sección: su patrón real es texto pequeño y apagado, sin
    mayúsculas ni marca de color. El acento lo llevan los enlaces y las viñetas. */
 .section-title {
-    margin: var(--space-5xl) 0 var(--space-md);
+    margin: var(--space-4xl) 0 var(--space-md);
     font-size: var(--text-sm);
     font-weight: var(--weight-regular);
     color: var(--color-muted);
@@ -500,7 +514,8 @@ pre code {
 }
 
 .page-intro .subtitle {
-    margin: 0 0 var(--space-5xl);
+    margin: 0 0 var(--space-4xl);
+    line-height: var(--leading);
 }
 
 /* --- 4.3 Entradas (portada y página de notas) --- */
@@ -516,21 +531,35 @@ pre code {
     max-width: 100%;
 }
 
-/* Título monoespaciado con línea guía hasta el metadato, como sus listas. */
+/* Título monoespaciado con línea guía hasta el metadato, como sus listas. El
+   título tiene que crecer para que el ::after tenga espacio donde dibujar: sin
+   flex: 1 1 auto el pseudo-elemento se queda a cero de ancho y la guía
+   desaparece. Es el mismo motivo que en .project__title. */
 .entry__title {
     display: flex;
     align-items: baseline;
+    flex: 1 1 auto;
+    min-width: 0;
     gap: var(--space-md);
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     font-weight: var(--weight-regular);
+    color: var(--color-text);
 }
 
 .entry__title::after {
     content: "";
     flex: 1 1 auto;
+    min-width: var(--space-lg);
     height: 1px;
     background-color: var(--color-line);
+}
+
+/* El acento se queda para el hover y para el foco: en reposo el titulo usa el
+   color de texto, como las filas de la portada. */
+.entry__title:hover,
+.entry__title:focus-visible {
+    color: var(--color-accent);
 }
 
 .entry__desc {
@@ -604,20 +633,20 @@ pre code {
 
 /* --- 4.5 Proyectos --- */
 
+/* Cada tarjeta respira como una fila de la portada: la linea guia vive en el
+   titulo y el bloque conserva la escala de la prosa, no la de las tarjetas
+   antiguas (--text-lg en el titulo y separaciones de 4xl entre proyecto y
+   proyecto, que hacian que cada entrada quedara aislada del resto). */
 .project {
-    margin-bottom: var(--space-4xl);
+    margin-bottom: var(--space-3xl);
 }
 
 .project__header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: var(--space-sm);
-}
-
-.project__title {
-    font-size: var(--text-lg);
-    font-weight: var(--weight-semibold);
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xs);
 }
 
 /* Títulos y roles de proyecto en monoespaciada, como sus productos; la
@@ -627,10 +656,15 @@ pre code {
     font-family: var(--font-mono);
 }
 
-/* La cabecera de proyecto lleva la misma línea guía que las entradas. */
+/* La cabecera de proyecto lleva la misma línea guía que las entradas. El título
+   tiene que crecer para que el ::after tenga espacio donde dibujar: sin
+   flex: 1 1 auto el pseudo-elemento se queda a cero de ancho y la guía
+   desaparece, que es justo lo que pasaba antes de este ajuste. */
 .project__title {
     display: flex;
     align-items: baseline;
+    flex: 1 1 auto;
+    min-width: 0;
     gap: var(--space-md);
     font-size: var(--text-sm);
     font-weight: var(--weight-regular);
@@ -639,6 +673,7 @@ pre code {
 .project__title::after {
     content: "";
     flex: 1 1 auto;
+    min-width: var(--space-lg);
     height: 1px;
     background-color: var(--color-line);
 }
@@ -651,12 +686,11 @@ pre code {
 }
 
 .project__meta {
-    font-size: var(--text-sm);
     color: var(--color-muted);
 }
 
 .project__role {
-    margin: 0 0 var(--space-md);
+    margin: 0 0 var(--space-2xs);
     font-size: var(--text-base);
     font-weight: var(--weight-medium);
 }
@@ -752,14 +786,6 @@ pre code {
 
 /* --- 4.8 Pie de página --- */
 
-.site-footer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2xl);
-    margin-top: var(--space-7xl);
-    padding-top: var(--space-4xl);
-    font-size: var(--text-sm);
-}
 
 .site-footer a {
     color: var(--color-muted);
