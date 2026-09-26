@@ -122,6 +122,7 @@
 
 html {
     -webkit-text-size-adjust: 100%;
+    scrollbar-gutter: stable;
 }
 
 ul[class] {
@@ -332,9 +333,12 @@ pre code {
     transition: var(--transition-color);
 }
 
-.site-nav a:hover,
 .site-nav a[aria-current="page"] {
     color: var(--color-text);
+}
+
+.site-nav a:hover {
+    color: var(--color-accent);
 }
 
 

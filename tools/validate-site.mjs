@@ -9,7 +9,7 @@ const PAGES = {
     'index.html': 'index.html',
     'proyectos.html': 'proyectos.html',
     'blog.html': 'blog.html',
-    'uses.html': null,
+    'uses.html': 'uses.html',
     'contact.html': 'contact.html',
     'nota-cpp.html': 'blog.html',
     'nota-ia.html': 'blog.html',
@@ -19,7 +19,7 @@ const PAGES = {
     'nota-psicologia.html': 'blog.html'
 };
 
-const NAV_ORDER = ['index.html', 'proyectos.html', 'blog.html', 'contact.html'];
+const NAV_ORDER = ['index.html', 'proyectos.html', 'blog.html', 'contact.html', 'uses.html'];
 
 const FOOTER_LINKS = [
     'mailto:amauriswillwork@gmail.com',
