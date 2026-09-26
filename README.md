@@ -22,6 +22,7 @@ tipografías Google Sans auto-alojadas y tema claro/oscuro con interruptor.
 ├── assets/css/main.css   Capa de presentación única (tokens + componentes)
 ├── assets/fonts/         Google Sans Flex y Google Sans Code (woff2, subconjunto latino)
 ├── assets/js/theme.js    Único JavaScript: el interruptor de tema
+├── assets/icons/         Icono local del interruptor (SVG)
 ├── assets/img/           Fotografías del sitio (convención en su README)
 ├── tools/validate-site.mjs  Pruebas de conformidad arquitectónica
 └── .nojekyll             Evita el procesado de Jekyll en GitHub Pages
@@ -64,9 +65,9 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 9. UTF-8 sin BOM en todos los archivos.
 10. Cada tema cumple contraste mínimo sobre el fondo: texto 7:1, texto atenuado y enlace 4.5:1,
     subrayado 3:1. El test calcula los ratios y falla si alguno baja del mínimo.
-11. **Sin bordes decorativos**: el texto se separa con espacio. Solo se dibujan líneas que
-    identifican un control (el subrayado de los enlaces y el carril del interruptor) y siempre
-    con `--color-underline`, que supera 3:1.
+11. **Sin bordes decorativos**: el texto se separa con espacio. La única línea que se dibuja es el
+    subrayado de los enlaces, con `--color-underline`, porque su color es casi igual al del texto y
+    sin él no se sabría qué es un enlace.
 12. Cada token de color se declara **una sola vez** con `light-dark(claro, oscuro)`; el tema
     activo lo decide `color-scheme`, que el interruptor fija con `:root[data-theme]`.
 13. Las tipografías son locales: nada de peticiones a Google ni a ningún otro tercero.
@@ -101,6 +102,10 @@ python -m http.server 8000    # luego abrir http://localhost:8000
   duplica bloque: el valor que se usa depende del `color-scheme` resuelto.
 - Con `light-dark()` no soportado, cada token tiene antes una declaración de reserva con el valor
   claro: el sitio se mantiene legible aunque el interruptor no funcione.
+- El icono es un **archivo local** (`assets/icons/lightbulb.svg`, de Material Symbols, Apache-2.0)
+  pintado con `mask`, no un `<img>`: dentro de un `<img>` el `fill="currentColor"` del SVG no ve los
+  colores de la página y el icono se quedaría negro en el tema oscuro. Con máscara hereda el color
+  del texto, y el archivo se cachea como cualquier otro recurso del sitio.
 
 ## Tipografías
 
@@ -108,6 +113,10 @@ python -m http.server 8000    # luego abrir http://localhost:8000
 con el subconjunto latino: 117 KB + 34 KB, sin peticiones a Google en cada visita. Se sirven con
 `font-display: swap` y `font-optical-sizing: auto` para que el eje `opsz` afine las formas al
 tamaño de lectura.
+
+El reparto es deliberado: **títulos y subtítulos** (`h1`, `h2`, `h3` y `.subtitle`) usan Google
+Sans Code, mientras que la prosa, el contenido de las secciones, la cabecera y el pie se quedan en
+Google Sans Flex. Así los títulos hacen de firma técnica y el texto corrido se lee más abierto.
 
 El subconjunto latino no incluye las flechas `U+2190`/`U+2192`, así que el sitio usa comillas
 angulares (`»`, `«`) en los enlaces de continuar y de volver, que además encajan mejor con la

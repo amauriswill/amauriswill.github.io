@@ -15,8 +15,8 @@
  *   - Sin !important y sin selectores de ID.
  *   - Cada tema se declara UNA sola vez con light-dark(); el tema activo lo decide
  *     color-scheme, que el interruptor fija con :root[data-theme="..."].
- *   - No hay bordes decorativos: el texto se separa con espacio. Solo se dibujan
- *     líneas que superan 3:1 porque identifican un control.
+ *   - No hay bordes decorativos: el texto se separa con espacio. La única línea que se
+ *     dibuja es el subrayado de los enlaces, porque su color es casi igual al del texto.
  *   - Convención de nombres BEM-lite: .bloque, .bloque__elemento, .bloque--variante.
  *   - Todo valor visual nuevo debe expresarse con un token de la capa 1.
  * ========================================================================== */
@@ -205,6 +205,15 @@ h3 {
     text-wrap: balance; /* evita títulos con una palabra huérfana al final */
 }
 
+/* Títulos y subtítulos en Google Sans Code. La prosa, el contenido de las
+   secciones, la cabecera y el pie se quedan en Google Sans Flex. */
+h1,
+h2,
+h3,
+.subtitle {
+    font-family: var(--font-mono);
+}
+
 /* Bloque de prosa: ritmo de lectura más pausado que el de la interfaz. */
 .prose {
     font-size: var(--text-md);
@@ -310,29 +319,21 @@ pre {
     color: var(--color-text);
 }
 
-/* El carril sí lleva línea: identifica un control (3:1 o más). */
-.theme-switch__track {
-    display: block;
-    width: 2rem;
+/* Icono local (assets/icons/lightbulb.svg) pintado con máscara: así hereda
+   currentColor y acompaña al tema, cosa que un <img src="…svg"> no puede hacer
+   porque su contenido no ve los colores de la página. */
+.theme-switch__icon {
+    width: 1.125rem;
     height: 1.125rem;
-    border: 1px solid var(--color-underline);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-}
-
-.theme-switch__knob {
-    display: block;
-    width: 0.75rem;
-    height: 0.75rem;
-    margin: 0.125rem;
-    border-radius: 50%;
-    background: var(--color-muted);
+    background-color: currentColor;
+    -webkit-mask: url("../icons/lightbulb.svg") center / contain no-repeat;
+    mask: url("../icons/lightbulb.svg") center / contain no-repeat;
     transition: var(--transition-knob);
 }
 
-.theme-switch[aria-checked="true"] .theme-switch__knob {
-    transform: translateX(0.875rem);
-    background: var(--color-text);
+.theme-switch[aria-checked="true"] .theme-switch__icon {
+    color: var(--color-text);
+    transform: rotate(-18deg);
 }
 
 /* --- 4.2 Encabezados de página y texto de apoyo --- */
