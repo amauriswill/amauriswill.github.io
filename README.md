@@ -26,6 +26,7 @@ Inter + IBM Plex Mono auto-alojadas y tema claro/oscuro con interruptor.
 ├── assets/icons/         Icono local del interruptor (SVG)
 ├── assets/img/           Fotografías del sitio (convención en su README)
 ├── tools/validate-site.mjs  Pruebas de conformidad arquitectónica
+├── tools/contrast-report.mjs  Informe de contraste, tipografía y peso del CSS
 └── .nojekyll             Evita el procesado de Jekyll en GitHub Pages
 ```
 
@@ -77,8 +78,12 @@ estilos, nunca al contrario**. La hoja no conoce páginas concretas, solo compon
 ## Validación
 
 ```bash
-node tools/validate-site.mjs
+node tools/validate-site.mjs      # contrato: falla con código 1 si algo se rompe
+node tools/contrast-report.mjs    # informe legible de accesibilidad
 ```
+
+El segundo imprime el contraste de cada par en los dos temas, las tipografías en uso y el peso
+del CSS. **Importa la matemática del primero**, así que informe y validación nunca discrepan.
 
 Comprueba: existencia de las 12 páginas, UTF-8 sin BOM, esqueleto del documento, capa de
 estilos externa, JavaScript acotado a `assets/js/theme.js`, anidamiento de etiquetas, enlaces

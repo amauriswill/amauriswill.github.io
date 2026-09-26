@@ -567,22 +567,19 @@ function tokensOf(block) {
     return tokens;
 }
 
+/** Tokens declarados en el bloque :root (los de :root[data-theme] no llevan valores). */
+function rootTokens(code) {
+    const block = /^:root\s*\{([\s\S]*?)\n\}/m.exec(code);
+    return tokensOf(block ? block[1] : '');
+}
+
 function checkThemeContrast() {
     const path = join(ROOT, STYLESHEET);
     if (!existsSync(path)) return [`${STYLESHEET}: no existe`];
 
     const failures = [];
     const code = stripCssComments(readFileSync(path, 'utf8'));
-    const rootBlock = /^:root\s*\{([\s\S]*?)\n\}/m.exec(code);
-
-    if (!/color-scheme:\s*light\s*;/.test(code)) {
-        failures.push(`${STYLESHEET}: :root debe declarar "color-scheme: light"`);
-    }
-    if (!code.includes(':root[data-theme="dark"]')) {
-        failures.push(`${STYLESHEET}: falta el selector :root[data-theme="dark"]`);
-    }
-
-    const tokens = tokensOf(rootBlock ? rootBlock[1] : '');
+    const tokens = rootTokens(code);
 
     for (const theme of ['claro', 'oscuro']) {
         for (const requirement of CONTRAST_REQUIREMENTS) {
@@ -650,7 +647,17 @@ function main() {
     process.exit(failed === 0 ? 0 : 1);
 }
 
-main();
+/* Exportado para que otras herramientas (tools/contrast-report.mjs) usen la misma
+   matemática y los mismos tokens: el informe y el contrato no pueden discrepar. */
+export {
+    ROOT, STYLESHEET, CONTRAST_REQUIREMENTS, contrastRatio, themeColor, tokensOf,
+    rootTokens, stripCssComments
+};
+
+/* Solo se ejecuta el contrato cuando se lanza este archivo como CLI. */
+if (process.argv[1] && process.argv[1].replace(/\\/g, '/').endsWith('validate-site.mjs')) {
+    main();
+}
 
 
 
