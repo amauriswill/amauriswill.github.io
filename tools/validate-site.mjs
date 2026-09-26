@@ -407,6 +407,22 @@ function stripCssComments(css) {
     return css.replace(/\/\*[\s\S]*?\*\//g, '');
 }
 
+function stripTags(value) {
+    return value.replace(/<[^>]*>/g, '');
+}
+
+// El enlace de la cabecera solo muestra el logo, asi que el nombre del sitio
+// llega al enlace por aria-label o por texto oculto para lectores de pantalla.
+function brandLinkName(inner) {
+    const label = /aria-label="([^"]+)"/.exec(inner);
+    if (label) return label[1].trim();
+
+    const hidden = /<span class="visually-hidden">([\s\S]*?)<\/span>/.exec(inner);
+    if (hidden) return stripTags(hidden[1]).trim();
+
+    return stripTags(inner).trim();
+}
+
 function checkSiteIdentity(pages) {
     const failures = [];
 
@@ -416,15 +432,17 @@ function checkSiteIdentity(pages) {
         const header = sliceElement(page.html, '<header', '</header>');
         if (!header) continue;
 
-        const block = /<div class="site-title">\s*<a href="index\.html">([^<]*)<\/a>\s*<\/div>/.exec(header);
+        const block = /<div class="site-title">\s*<a href="index\.html">([\s\S]*?)<\/a>\s*<\/div>/.exec(header);
         if (!block) {
             failures.push(`${page.file}: .site-title debe ser un enlace a index.html`);
             continue;
         }
 
-        const name = block[1].trim();
-        if (name !== SITE_NAME) {
-            failures.push(`${page.file}: el nombre del sitio debe ser "${SITE_NAME}" y es "${name}"`);
+        const name = brandLinkName(block[1]);
+        if (!name) {
+            failures.push(`${page.file}: el enlace de .site-title necesita un nombre accesible`);
+        } else if (!name.includes(SITE_NAME)) {
+            failures.push(`${page.file}: el nombre accesible debe incluir "${SITE_NAME}" y es "${name}"`);
         }
     }
 

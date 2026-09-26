@@ -355,18 +355,16 @@ pre code {
 .site-title a {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-xs);
 }
 
-.site-title a::before {
-    content: "";
-    display: inline-block;
-    width: 1.05em;
-    height: 1.05em;
+.site-title__mark {
+    display: block;
+    width: 1.3rem;
+    height: 1.3rem;
     background: url("../icons/aw-mask.svg") center / contain no-repeat;
 }
 
-:root[data-theme="dark"] .site-title a::before {
+:root[data-theme="dark"] .site-title__mark {
     filter: invert(1);
 }
 
