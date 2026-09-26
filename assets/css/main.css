@@ -349,15 +349,13 @@ pre code {
 
 .site-title__mark {
     display: block;
-    height: 1.35rem;
+    height: 1.05rem;
     width: auto;
-    aspect-ratio: 245 / 108;
+    aspect-ratio: 815 / 108;
     background: url("../icons/aw-logo.png") center / contain no-repeat;
 }
 
 :root[data-theme="dark"] .site-title__mark {
-    height: 1.05rem;
-    aspect-ratio: 815 / 108;
     background-image: url("../icons/aw-logo-dark.png");
 }
 

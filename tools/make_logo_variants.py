@@ -1,19 +1,20 @@
 """Genera las dos variantes del logo de la cabecera a partir del arte original.
 
-Cada tema usa un lockup distinto, a proposito:
-
-- claro  -> v1, solo el bloque "more" recortado a su caja. Compacto y sin
-            texto que compita con la navegacion.
-- oscuro -> v2, el lockup completo "amauriswill" con el texto claro, que es
-            como esta desenhado el arte.
+El lockup es el MISMO en los dos temas: "amauriswill" seguido del bloque
+amarillo con "more". Lo unico que cambia es el color del texto, para que se lea
+sobre el fondo claro y sobre el oscuro sin que el logo cambie de forma al
+alternar el tema. El amarillo del bloque y la palabra "more" se dejan igual en
+ambos casos, porque "more" es negra sobre amarillo y al recolorearla perderia
+todo el contraste.
 
 El arte llega como raster, no como vector, asi que aqui no se redibuja nada: se
-recorta y se recolorea. Sin dependencias: el PNG se decodifica y se vuelve a
-codificar con zlib, para que el color sea exacto y no dependa de Pillow ni de
-filtros CSS, que deformarian el amarillo al invertirlo.
+recolorea. Sin dependencias: el PNG se decodifica y se vuelve a codificar con
+zlib, para que el color sea exacto y no dependa de Pillow ni de filtros CSS,
+que deformarian el amarillo al invertirlo.
 
 Uso:
-    python tools/make_logo_variants.py
+    python tools/make_logo_variants.py          # genera ambas variantes
+    python tools/make_logo_variants.py inspect  # muestra los colores usados
 """
 
 import os
@@ -25,17 +26,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ICONS = os.path.join(ROOT, "assets", "icons")
 BRAND = os.path.join(ROOT, "assets", "brand")
 
-SOURCES = {
-    # El lockup completo es el que va en la cabecera; el de "more" solo queda
-    # guardado como referencia de marca, no se usa en el sitio.
-    "logo": os.path.join(BRAND, "amauriswill-page_LOGO_v2.png"),
-    "mark": os.path.join(BRAND, "amauriswill-page_LOGO.png"),
-}
+SOURCE = os.path.join(BRAND, "amauriswill-page_LOGO_v2.png")
 
-# El lockup de la v1 es solo el bloque amarillo; el de la v2 lleva el nombre.
-# En tema oscuro se usa el lockup completo con el texto claro.
-# El amarillo del bloque y la palabra "more" nunca se tocan: "more" es negra
-# sobre amarillo en ambos temas, y al recolorearla perderia el contraste.
+# Color del texto segun el fondo. El negro es el del propio arte.
+LIGHT_INK = (0x0D, 0x0D, 0x0D)
 DARK_INK = (0xF4, 0xF4, 0xF2)
 
 
@@ -155,48 +149,23 @@ def recolor_ink(width, height, pixels, ink):
 
 # ----------------------------------------------------------------- generacion
 
-def crop_box(pixels, width, height, x0, y0, x1, y1, pad=2):
-    """Recorta la caja indicada y devuelve un PNG RGBA nuevo."""
-    x0 = max(0, x0 - pad)
-    y0 = max(0, y0 - pad)
-    x1 = min(width - 1, x1 + pad)
-    y1 = min(height - 1, y1 + pad)
-
-    out_w, out_h = x1 - x0 + 1, y1 - y0 + 1
-    out = bytearray(out_w * out_h * 4)
-    for y in range(out_h):
-        src = ((y + y0) * width + x0) * 4
-        out[y * out_w * 4:(y + 1) * out_w * 4] = pixels[src:src + out_w * 4]
-
-    path = os.path.join(ICONS, "aw-logo.png")
-    write_png(path, out_w, out_h, out)
-    return out_w, out_h
-
-
 def generate():
     os.makedirs(ICONS, exist_ok=True)
     os.makedirs(BRAND, exist_ok=True)
 
-    for src in SOURCES.values():
-        if not os.path.exists(src):
-            raise SystemExit(f"falta el arte original: {src}")
+    if not os.path.exists(SOURCE):
+        raise SystemExit(f"falta el arte original: {SOURCE}")
 
-    # Tema claro: el bloque "more" de la v1, recortado a su caja. Sobre fondo
-    # claro el lockup largo no aporta: el nombre ya esta en el h1 y el titulo.
-    width, height, pixels = read_png(SOURCES["mark"])
-    box = yellow_box(width, height, pixels)
-    out_w, out_h = crop_box(pixels, width, height, *box)
-    print(f"assets/icons/aw-logo.png (tema claro, mark \"more\" "
-          f"{out_w}x{out_h} recortado de {width}x{height})")
+    width, height, original = read_png(SOURCE)
 
-    # Tema oscuro: el lockup completo de la v2, con el texto claro.
-    width, height, pixels = read_png(SOURCES["logo"])
-    changed = recolor_ink(width, height, pixels, DARK_INK)
-    write_png(os.path.join(ICONS, "aw-logo-dark.png"), width, height, pixels)
-    print(f"assets/icons/aw-logo-dark.png (tema oscuro, lockup {width}x{height}, "
-          f"{changed} pixeles a #{DARK_INK[0]:02x}{DARK_INK[1]:02x}{DARK_INK[2]:02x})")
+    for name, ink in (("aw-logo.png", LIGHT_INK), ("aw-logo-dark.png", DARK_INK)):
+        pixels = bytearray(original)
+        changed = recolor_ink(width, height, pixels, ink)
+        write_png(os.path.join(ICONS, name), width, height, pixels)
+        color = f"#{ink[0]:02x}{ink[1]:02x}{ink[2]:02x}"
+        print(f"assets/icons/{name} ({width}x{height}, {changed} pixeles a {color})")
 
-    print(f"\nProximo paso: aspect-ratio distinto por tema en .site-title__mark")
+    print(f"\nMismo lockup en ambos temas: aspect-ratio: {width} / {height}")
 
 
 def inspect():
