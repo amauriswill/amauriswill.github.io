@@ -192,7 +192,9 @@ a:hover {
     border-bottom-color: var(--color-text);
 }
 
-a:focus-visible {
+/* El foco también debe verse en el botón, no solo en los enlaces. */
+a:focus-visible,
+button:focus-visible {
     outline: 2px solid var(--color-link);
     outline-offset: 2px;
 }
@@ -298,10 +300,8 @@ pre {
 .theme-switch {
     display: none; /* sin JavaScript no hay nada que cambiar: no se muestra */
     align-items: center;
-    gap: var(--space-2xs);
-    padding: 0;
-    font-family: var(--font-sans);
-    font-size: var(--text-xs);
+    /* Sin etiqueta: el relleno amplía el área sensible a ~28px (WCAG 2.2 pide 24). */
+    padding: var(--space-2xs);
     color: var(--color-muted);
     background: none;
     border: 0;
@@ -466,6 +466,13 @@ pre {
 .project__title {
     font-size: var(--text-lg);
     font-weight: var(--weight-semibold);
+}
+
+/* Títulos y roles de proyecto en Google Sans Code, igual que los títulos de
+   sección; la descripción y las etiquetas se quedan en Google Sans Flex. */
+.project__title,
+.project__role {
+    font-family: var(--font-mono);
 }
 
 .project__meta {

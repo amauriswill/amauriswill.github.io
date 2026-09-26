@@ -94,8 +94,9 @@ python -m http.server 8000    # luego abrir http://localhost:8000
 ## Tema claro y oscuro
 
 - Por defecto manda el sistema (`prefers-color-scheme`), sin JavaScript.
-- El interruptor de la cabecera (`role="switch"`, con `aria-checked`) fija la preferencia y la
-  guarda en `localStorage` con la clave `theme`.
+- El interruptor de la cabecera es **solo icono** (una bombilla): sin texto visible, su nombre
+  accesible viene de `aria-label="Tema oscuro"` y el estado de `aria-checked`. El test exige que
+  `role="switch"` y ese `aria-label` no falten. El relleno amplía el área sensible a ~28 px.
 - `data-theme` solo se escribe en `<html>` cuando la elección **difiere** del sistema; si no, se
   retira y `:root` vuelve a valer `color-scheme: light dark`.
 - Los colores se declaran una sola vez con `light-dark(claro, oscuro)`, así que el tema oscuro no
@@ -114,9 +115,11 @@ con el subconjunto latino: 117 KB + 34 KB, sin peticiones a Google en cada visit
 `font-display: swap` y `font-optical-sizing: auto` para que el eje `opsz` afine las formas al
 tamaño de lectura.
 
-El reparto es deliberado: **títulos y subtítulos** (`h1`, `h2`, `h3` y `.subtitle`) usan Google
-Sans Code, mientras que la prosa, el contenido de las secciones, la cabecera y el pie se quedan en
-Google Sans Flex. Así los títulos hacen de firma técnica y el texto corrido se lee más abierto.
+El reparto es deliberado: **títulos y subtítulos** (`h1`, `h2`, `h3` y `.subtitle`) y también los
+**títulos y roles de proyecto** (`.project__title`, `.project__role`) usan Google Sans Code,
+mientras que la prosa, las descripciones, las etiquetas, el contenido de las secciones, la cabecera
+y el pie se quedan en Google Sans Flex. Así los títulos hacen de firma técnica y el texto corrido
+se lee más abierto.
 
 El subconjunto latino no incluye las flechas `U+2190`/`U+2192`, así que el sitio usa comillas
 angulares (`»`, `«`) en los enlaces de continuar y de volver, que además encajan mejor con la

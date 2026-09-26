@@ -259,6 +259,23 @@ function checkScripts(pages) {
         failures.push(`${STYLESHEET}: el interruptor debe mostrarse con .js .theme-switch`);
     }
 
+    /* El interruptor es solo icono: su nombre accesible tiene que venir de aria-label. */
+    for (const page of pages.values()) {
+        if (page.missing) continue;
+        const button = openings(page.tags, 'button').find((tag) => hasAttribute(tag, 'data-theme-switch'));
+
+        if (!button) {
+            failures.push(`${page.file}: falta el <button data-theme-switch>`);
+            continue;
+        }
+        if (attributeValue(button, 'role') !== 'switch') {
+            failures.push(`${page.file}:${button.line}: el interruptor debe usar role="switch"`);
+        }
+        if (!(attributeValue(button, 'aria-label') || '').trim()) {
+            failures.push(`${page.file}:${button.line}: el interruptor es solo icono y necesita aria-label`);
+        }
+    }
+
     return failures;
 }
 
