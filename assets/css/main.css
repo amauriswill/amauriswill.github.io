@@ -359,13 +359,14 @@ pre code {
 
 .site-title__mark {
     display: block;
-    width: 1.3rem;
-    height: 1.3rem;
-    background: url("../icons/aw-mask.svg") center / contain no-repeat;
+    height: 1.2rem;
+    width: auto;
+    aspect-ratio: 1268 / 170;
+    background: url("../icons/aw-logo.svg") center / contain no-repeat;
 }
 
 :root[data-theme="dark"] .site-title__mark {
-    filter: invert(1);
+    background-image: url("../icons/aw-logo-dark.svg");
 }
 
 .site-nav {
