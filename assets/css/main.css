@@ -823,6 +823,145 @@ pre code {
  * 6. RESPONSIVE (un único breakpoint: 550px)
  * ========================================================================== */
 
+/* =============================================================================
+ * 7. PORTADA: EL ESQUELETO DE ivan.codes
+ * -----------------------------------------------------------------------------
+ * Su portada es deliberadamente escueta y se apoya en una sola pieza gramatical
+ * que repite en cada listado: el TITULO followed by a thin leader line that eats
+ * the leftover space, and the metadata parked at the right margin. Todo lo demas
+ * es prosa. Estas reglas reproducen esa estructura sin tocar las paginas
+ * interiores, que siguen usando .entry y .project.
+ * ========================================================================== */
+
+/* --- 7.1 Encabezado de la portada: una frase en tinta, el resto atenuado --- */
+
+.hero {
+    margin-bottom: var(--space-3xl);
+}
+
+/* La frase de entrada es lo unico del sitio que va en tinta plena y sube de
+   tamano: es el titulo real de la pagina. */
+.hero__lead {
+    max-width: 30em;
+    margin: 0 0 var(--space-lg);
+    font-size: var(--text-md);
+    line-height: 1.5;
+    color: var(--color-text);
+}
+
+.hero .prose {
+    max-width: 34em;
+}
+
+/* En su portada los enlaces de prosa llevan subrayado permanente en color de
+   texto: el acento se reserva para el nav activo y el foco. */
+.hero .prose a,
+.page-intro .prose a {
+    color: var(--color-text);
+    background-image: none;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--color-line);
+    transition: var(--transition-color);
+}
+
+.hero .prose a:hover,
+.page-intro .prose a:hover {
+    text-decoration-color: var(--color-accent);
+}
+
+/* --- 7.2 La fila con linea guia: la unidad de lectura de sus listados --- */
+
+.row-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Cada fila es una linea de base: titulo, Guia elástica, metadato. La guia se
+   dibuja con un pseudo-elemento del titulo, no con un borde del contenedor,
+   para que solo exista donde de verdad hay espacio sobrante. */
+.row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding: var(--space-sm) 0;
+}
+
+.row__title {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+    color: var(--color-text);
+    /* El titulo de la fila no dibuja la barra de acento: su guia ya es la
+       linea, y dos rayas a la vez serian ruido. */
+    background-image: none;
+}
+
+.row__title::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background-color: var(--color-line);
+}
+
+
+.row__title:hover {
+    color: var(--color-accent);
+}
+
+.row__meta {
+    flex: 0 0 auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-muted);
+    white-space: nowrap;
+    text-align: right;
+}
+
+/* --- 7.3 Pie en dos grupos: enlaces a la izquierda, llamada a la derecha --- */
+
+.site-footer {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    margin-top: var(--space-7xl);
+    padding-top: var(--space-3xl);
+    font-size: var(--text-sm);
+}
+
+.site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+}
+
+.site-footer a {
+    color: var(--color-muted);
+    background-image: none;
+    transition: var(--transition-color);
+}
+
+.site-footer a:hover {
+    color: var(--color-text);
+}
+
+/* La llamada a la accion vive en el borde derecho: es lo unico del pie que
+   puede reclamar atención. */
+.site-footer__cta {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.site-footer__cta:hover {
+    color: var(--color-accent);
+}
+
 @media (max-width: 550px) {
     body {
         padding: var(--space-7xl) var(--gutter); /* su py-16 en móvil */
@@ -848,7 +987,26 @@ pre code {
         flex-direction: column;
         gap: var(--space-3xs);
     }
+
+    /* La fila de la portada se apila y su guia se retira: sin ancho sobrante
+       que repartir solo dibujaria una raya corta pegada al titulo. */
+    .row {
+        flex-wrap: wrap;
+        gap: var(--space-2xs);
+    }
+
+    .row__title::after {
+        display: none;
+    }
+
+    .row__meta {
+        flex-basis: 100%;
+        text-align: left;
+    }
+
+    /* El pie pasa a una columna: los enlaces y la llamada ya no caben en fila. */
+    .site-footer {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
 }
-
-
-

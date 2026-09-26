@@ -42,7 +42,8 @@ const FOOTER_LINKS = [
     'https://behance.net/amauriswill',
     'https://youtube.com/@amaurisfolio',
     'uses.html',
-    'photos.html'
+    'photos.html',
+    'contact.html' // la llamada a la acci\u00f3n del pie, a la derecha
 ];
 
 /** Contraste mínimo exigido por WCAG sobre el fondo, en ambos temas. */
